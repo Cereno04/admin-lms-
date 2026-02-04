@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanWash - Manage Customers</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/wave.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/logo1.png" alt="OceanWash Logo" class="logo-img">
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="./dashboard.html" class="nav-link">
+                        <span class="material-icons-sharp">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./orders.html" class="nav-link">
+                        <span class="material-icons-sharp">receipt_long</span>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./schedule.html" class="nav-link">
+                        <span class="material-icons-sharp">local_shipping</span>
+                        <span>Delivery Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./customers.html" class="nav-link active">
+                        <span class="material-icons-sharp">people</span>
+                        <span>Customers</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../include/login.html" class="nav-link" id="logout-btn">
+                    <span class="material-icons-sharp">logout</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Manage Customers</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin Avatar">
+                    <span>Admin</span>
+                </div>
+            </header>
+            
+            <section class="page-content">
+                <div class="page-header">
+                    <h2>Registered Customer Accounts</h2>
+                    <div class="header-actions">
+                        <input type="text" class="search-bar" placeholder="Search by name or email...">
+                        <button class="add-new-btn">
+                            <span class="material-icons-sharp">add</span>
+                            Add New Customer
+                        </button>
+                    </div>
+                </div>
+
+                <div class="customer-grid" id="customer-grid">
+                    <div class="customer-card">
+                        <div class="customer-avatar">
+                            <span class="material-icons-sharp">person</span>
+                        </div>
+                        <h3 class="customer-name">Oscar Excuitlor</h3>
+                        <p class="customer-email">oscar.e@gmail.com</p>
+                        <p class="customer-phone">+63 912 345 6789</p>
+                        <div class="customer-card-actions">
+                            <button class="details-btn chat-btn" data-user-id="1" data-user-name="Oscar Excuitlor">Start Chat</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                     <div class="customer-card">
+                        <div class="customer-avatar">
+                            <span class="material-icons-sharp">person</span>
+                        </div>
+                        <h3 class="customer-name">Sarah L.</h3>
+                        <p class="customer-email">sarah.l@email.com</p>
+                        <p class="customer-phone">+63 998 765 4321</p>
+                        <div class="customer-card-actions">
+                            <button class="details-btn chat-btn" data-user-id="2" data-user-name="Sarah L.">Start Chat</button>
+                            <button class="delete-btn">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <div id="chat-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <div id="chat-header">
+                Chatting with <span id="chat-target-name" style="margin-left: 5px;">User</span>
+            </div>
+            <div id="chat-messages">
+                <div class="message-bubble message-received">Hello! How can I help you today?</div>
+                <div class="message-bubble message-sent">I have a question about my recent order.</div>
+            </div>
+            <div id="chat-input-area">
+                <input type="text" id="chat-message-input" placeholder="Type a message...">
+                <button id="send-message-btn"><span class="material-icons-sharp">send</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="../script.js"></script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('chat-modal');
+            const closeBtn = document.querySelector('.close-btn');
+            const chatName = document.getElementById('chat-target-name');
+
+            document.querySelectorAll('.chat-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    chatName.innerText = btn.getAttribute('data-user-name');
+                    modal.style.display = 'flex';
+                });
+            });
+
+            closeBtn.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => {
+                if(e.target === modal) modal.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

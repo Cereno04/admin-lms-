@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanWash - Rider Management</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="icon" type="image/png" href="assets/wave.png">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/logo1.png" alt="OceanWash Logo" class="logo-img">
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item"><a href="./dashboard.html" class="nav-link"><span class="material-icons-sharp">dashboard</span><span>Dashboard</span></a></li>
+                <li class="nav-item"><a href="./orders.html" class="nav-link"><span class="material-icons-sharp">receipt_long</span><span>Orders</span></a></li>
+                <li class="nav-item"><a href="./schedule.html" class="nav-link active"><span class="material-icons-sharp">local_shipping</span><span>RIDER</span></a></li>
+                <li class="nav-item"><a href="./customers.html" class="nav-link"><span class="material-icons-sharp">people</span><span>Customers</span></a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../include/login.html" class="nav-link" id="logout-btn">
+                    <span class="material-icons-sharp">logout</span><span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Rider Management</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin Avatar">
+                    <span>Admin</span>
+                </div>
+            </header>
+
+            <section class="page-content">
+                <div class="page-header">
+                    <h2>Rider Directory</h2>
+                    <button class="add-new-btn" id="open-rider-modal">
+                        <span class="material-icons-sharp">person_add</span> Add New Rider
+                    </button>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th width="15%">Rider ID (APP LOGIN)</th>
+                                <th width="25%">Full Name</th>
+                                <th width="25%">Email</th>
+                                <th width="15%">Phone</th>
+                                <th width="10%">Status</th>
+                                <th width="10%">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rider-table-body"></tbody>    
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ADD RIDER MODAL -->
+    <div id="riderModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h3>Register New Rider</h3>
+                <span class="close-modal-btn" id="close-rider-modal">&times;</span>
+            </div>
+            <form id="rider-form">
+                <div class="custom-modal-body">
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Rider ID</label>
+                        <input type="text" id="rider-id" readonly style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; background:#f0f0f0;">
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Full Name</label>
+                        <input type="text" id="rider-name" placeholder="John Doe" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Login Email</label>
+                        <input type="email" id="rider-email" placeholder="rider@oceanwash.com" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Phone Number</label>
+                        <input type="text" id="rider-phone" placeholder="09123456789" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Login Password</label>
+                        <input type="password" id="rider-password" placeholder="******" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    </div>
+                </div>
+                <div class="custom-modal-footer">
+                    <button type="button" class="btn btn-secondary" id="cancel-rider">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Rider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- IMAGE 1 STYLE: CUSTOM ALERT -->
+    <div id="alert-modal" class="custom-alert-overlay">
+        <div class="custom-alert-card">
+            <div class="alert-header">127.0.0.1:5501 says</div>
+            <div class="alert-body" id="alert-message">This account already exists!</div>
+            <div class="alert-footer">
+                <button id="alert-ok-btn">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- IMAGE 2 STYLE: CUSTOM CONFIRM -->
+    <div id="confirm-modal" class="custom-alert-overlay">
+        <div class="confirm-card">
+            <div class="confirm-icon">!</div>
+            <h2 id="confirm-title">Are you sure?</h2>
+            <p id="confirm-message">You have unsaved changes</p>
+            <div class="confirm-footer">
+                <button class="confirm-btn-cancel" id="confirm-cancel-btn">Cancel</button>
+                <button class="confirm-btn-yes" id="confirm-yes-btn">Yes</button>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module" src="../script.js"></script>
+</body>
+</html>

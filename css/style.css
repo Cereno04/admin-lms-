@@ -1,0 +1,740 @@
+/* =========================================
+   1. VARIABLES & BASE STYLES
+   ========================================= */
+:root {
+    --color-primary: #0077B6;
+    --color-background: #F8F9FA;
+    --color-white: #ffffff;
+    --color-dark: #343a40;
+    --color-light: #6C757D;
+    --color-border: #e9ecef;
+    
+    /* Dashboard Card Colors */
+    --color-accent-red: #FAD2E1;
+    --color-accent-blue: #D6EAF8;
+    --color-accent-purple: #E8DFF5;
+    --color-accent-green: #D1FAE5;
+
+    /* Status Colors */
+    --status-pending-bg: #FFF3CD;
+    --status-pending-text: #856404;
+    --status-processing-bg: #D1ECF1;
+    --status-processing-text: #0C5460;
+    --status-completed-bg: #D4EDDA;
+    --status-completed-text: #155724;
+    
+    --card-border-radius: 1rem;
+    --border-radius-1: 0.5rem;
+    --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Critical for alignment */
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--color-dark);
+    background-color: var(--color-background);
+}
+
+/* =========================================
+   2. LAYOUT & SIDEBAR
+   ========================================= */
+.container {
+    display: flex;
+    height: 100vh;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    flex-shrink: 0;
+    border-right: 1px solid var(--color-border);
+    transition: all 0.3s ease;
+}
+
+.sidebar-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+}
+
+.logo-img { height: 40px; }
+
+.sidebar-nav { flex-grow: 1; }
+.nav-item { list-style: none; margin-bottom: 0.5rem; }
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 1rem;
+    border-radius: var(--border-radius-1);
+    color: var(--color-light);
+    text-decoration: none;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.nav-link:hover {
+    background-color: #f0f7ff;
+    color: var(--color-primary);
+}
+
+.nav-link.active {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+.nav-link.active .material-icons-sharp {
+    color: var(--color-white);
+}
+
+.sidebar-footer {
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+/* =========================================
+   3. MAIN CONTENT
+   ========================================= */
+.main-content {
+    flex-grow: 1;
+    padding: 1.5rem 2.5rem;
+    overflow-y: auto;
+    background-color: var(--color-background);
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.main-header h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.admin-profile img {
+    width: 40px; height: 40px; border-radius: 50%; object-fit: cover;
+}
+
+/* =========================================
+   4. DASHBOARD TOP CARDS
+   ========================================= */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.card {
+    background: var(--color-white);
+    padding: 1.5rem;
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--box-shadow);
+}
+
+.card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.card .card-main {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.card .card-icon { font-size: 36px; }
+.card .count { font-size: 2.5rem; font-weight: 700; }
+
+.card.card-red { background-color: var(--color-accent-red); color: #DC2626; }
+.card.card-blue { background-color: var(--color-accent-blue); color: #2563EB; }
+.card.card-purple { background-color: var(--color-accent-purple); color: #4F46E5; }
+.card.card-green { background-color: var(--color-accent-green); color: #059669; }
+
+/* =========================================
+   5. OTHER PAGES (Customers, Schedule)
+   ========================================= */
+.customer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.customer-card {
+    background-color: var(--color-white);
+    border-radius: var(--card-border-radius);
+    box-shadow: var(--box-shadow);
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid var(--color-border);
+}
+
+.customer-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background-color: var(--color-accent-blue);
+    display: grid; place-items: center; margin: 0 auto 1rem;
+}
+
+.customer-card-actions {
+    margin-top: 1.5rem;
+    display: flex; gap: 1rem; justify-content: center;
+}
+
+.data-table {
+    width: 100%; border-collapse: collapse; background: #fff;
+    border-radius: 8px; overflow: hidden; box-shadow: var(--box-shadow);
+}
+.data-table th, .data-table td {
+    padding: 1rem; text-align: left; border-bottom: 1px solid var(--color-border);
+}
+.data-table th { background: #f8f9fa; }
+
+/* =========================================
+   6. ORDERS TABLE STYLES (COMPACT)
+   ========================================= */
+.table-header-control {
+    background: var(--color-white); padding: 15px 20px;
+    border-radius: 8px 8px 0 0; border: 1px solid var(--color-border);
+    border-bottom: none; display: flex; justify-content: space-between;
+    align-items: center; flex-wrap: wrap; gap: 10px;
+}
+.table-header-control h2 { font-size: 1.1rem; font-weight: 600; margin: 0; }
+.control-group { display: flex; gap: 10px; }
+
+.search-box, .filter-box {
+    display: flex; align-items: center; background: var(--color-white);
+    border: 1px solid #ced4da; border-radius: 4px; padding: 5px 10px;
+}
+.search-box input { border: none; outline: none; padding-left: 5px; font-size: 13px; }
+.filter-box select { border: none; outline: none; cursor: pointer; font-size: 13px; background: transparent; }
+
+.table-responsive {
+    background: var(--color-white); border: 1px solid var(--color-border);
+    border-bottom: none; width: 100%;
+}
+.custom-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+
+.custom-table thead th {
+    background-color: #FAFBFC; color: #5F6E82; font-weight: 700;
+    text-transform: uppercase; font-size: 11px; letter-spacing: 0.5px;
+    padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--color-border);
+}
+.custom-table tbody tr:hover { background-color: #f8f9fa; }
+.custom-table tbody td {
+    padding: 12px 15px; border-bottom: 1px solid #EEF2F7;
+    vertical-align: top; color: #444;
+}
+
+.td-date p, .td-user p { font-weight: 600; margin-bottom: 2px; color: var(--color-dark); }
+.td-date span, .td-user span { font-size: 11px; color: #888; }
+.td-details { line-height: 1.5; font-size: 12.5px; color: #555; max-width: 250px; }
+.td-details .note { display: block; margin-top: 4px; color: #E67E22; font-style: italic; font-size: 11px; }
+.td-price { font-weight: 700; color: var(--color-primary); font-size: 14px; }
+
+.status-badge {
+    padding: 4px 10px; border-radius: 50px; font-size: 11px; font-weight: 600;
+    display: inline-block; text-align: center;
+}
+.status-badge.pending { background: var(--status-pending-bg); color: var(--status-pending-text); border: 1px solid #FFE0B2; }
+.status-badge.processing { background: var(--status-processing-bg); color: var(--status-processing-text); border: 1px solid #B8DAFF; }
+.status-badge.completed { background: var(--status-completed-bg); color: var(--status-completed-text); border: 1px solid #C3E6CB; }
+.status-badge.in-progress { background: #E3F2FD; color: #1565C0; border: 1px solid #BBDEFB; }
+
+.actions { display: flex; gap: 8px; }
+.icon-btn { border: none; background: none; cursor: pointer; padding: 0; transition: transform 0.2s; }
+.icon-btn:hover { transform: scale(1.2); }
+.view-btn { color: #0077B6; }
+.edit-btn { color: #F39C12; }
+.del-btn { color: #E74C3C; }
+
+.pagination-container {
+    background: var(--color-white); padding: 10px 20px;
+    border: 1px solid var(--color-border); border-radius: 0 0 8px 8px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.pagination-buttons { display: flex; gap: 5px; }
+.pg-btn {
+    border: 1px solid var(--color-border); background: var(--color-white);
+    color: var(--color-primary); width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 4px; cursor: pointer; font-size: 12px;
+}
+.pg-btn.active { background: var(--color-primary); color: var(--color-white); }
+
+/* =========================================
+   7. DASHBOARD EXTENDED STYLES
+   ========================================= */
+.dashboard-extended { margin-top: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+.chart-container {
+    background: var(--color-white); padding: 2rem; border-radius: var(--card-border-radius);
+    box-shadow: var(--box-shadow); min-height: 350px; border: 1px solid var(--color-border);
+}
+.chart-header { margin-bottom: 1.5rem; }
+.chart-header h2 { font-size: 1.2rem; display: flex; align-items: center; gap: 10px; }
+.dashboard-info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+.info-card {
+    background: var(--color-white); padding: 1.5rem 2rem; border-radius: var(--card-border-radius);
+    box-shadow: var(--box-shadow); border: 1px solid var(--color-border);
+}
+.info-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.info-header h3 { font-size: 1.1rem; display: flex; align-items: center; gap: 8px; }
+.manage-btn {
+    padding: 0.4rem 1rem; border: 1px solid var(--color-dark); background: transparent;
+    border-radius: 6px; font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: 0.3s;
+}
+.manage-btn:hover { background: var(--color-dark); color: var(--color-white); }
+.info-content h4 { font-size: 1rem; margin-bottom: 0.5rem; color: var(--color-dark); }
+.info-content p { color: var(--color-light); line-height: 1.6; font-size: 0.95rem; }
+
+/* =========================================
+   8. CUSTOMERS PAGE & CHAT STYLES
+   ========================================= */
+.page-header {
+    display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.page-header h2 { font-size: 1.4rem; color: var(--color-dark); }
+.header-actions { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.search-bar { padding: 0.6rem 1rem; border: 1px solid #ced4da; border-radius: 4px; font-size: 0.9rem; width: 250px; }
+
+.add-new-btn {
+    display: flex; align-items: center; gap: 0.5rem;
+    background-color: var(--color-primary); color: var(--color-white);
+    padding: 0.6rem 1.2rem; border: none; border-radius: 4px;
+    font-weight: 500; cursor: pointer; transition: 0.3s;
+}
+.add-new-btn:hover { background-color: #005f92; }
+
+.customer-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.customer-card:hover { transform: translateY(-5px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+.customer-name { margin-bottom: 0.2rem; font-size: 1.1rem; color: var(--color-dark); }
+.customer-email { font-size: 0.9rem; color: var(--color-light); margin-bottom: 0.2rem; }
+.customer-phone { font-size: 0.9rem; color: var(--color-light); font-weight: 500; }
+
+.details-btn, .delete-btn {
+    padding: 0.5rem 1.2rem; border-radius: 4px; cursor: pointer; font-size: 0.9rem; font-weight: 500;
+}
+.details-btn {
+    background-color: var(--color-white); color: var(--color-primary); border: 1px solid var(--color-primary); transition: 0.3s;
+}
+.details-btn:hover { background-color: var(--color-primary); color: var(--color-white); }
+.delete-btn {
+    background-color: var(--color-white); color: #DC2626; border: 1px solid #DC2626; transition: 0.3s;
+}
+.delete-btn:hover { background-color: #DC2626; color: var(--color-white); }
+
+/* Chat Modal Styles */
+.modal {
+    display: none; position: fixed; z-index: 1000; left: 0; top: 0;
+    width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px); align-items: center; justify-content: center;
+}
+.modal-content {
+    background-color: #fff; padding: 0; border-radius: 12px;
+    width: 90%; max-width: 450px; height: 600px;
+    display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    position: relative; overflow: hidden;
+}
+.close-btn {
+    position: absolute; top: 12px; right: 20px; font-size: 28px;
+    font-weight: bold; color: #fff; cursor: pointer; z-index: 10;
+}
+#chat-header {
+    background-color: var(--color-primary); color: #fff; padding: 1.2rem;
+    font-weight: 600; font-size: 1.1rem; display: flex; align-items: center;
+}
+#chat-messages {
+    flex-grow: 1; padding: 1.5rem; overflow-y: auto; background-color: #f5f7fa;
+    display: flex; flex-direction: column; gap: 10px;
+}
+.message-bubble { padding: 10px 15px; border-radius: 15px; max-width: 80%; font-size: 0.9rem; line-height: 1.4; }
+.message-sent { align-self: flex-end; background-color: var(--color-primary); color: #fff; border-bottom-right-radius: 2px; }
+.message-received { align-self: flex-start; background-color: #e9ecef; color: #333; border-bottom-left-radius: 2px; }
+#chat-input-area {
+    padding: 1rem; background-color: #fff; border-top: 1px solid #eee; display: flex; gap: 10px; align-items: center;
+}
+#chat-message-input { flex-grow: 1; padding: 10px 15px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+#chat-message-input:focus { border-color: var(--color-primary); }
+#send-message-btn {
+    background-color: var(--color-primary); color: #fff; border: none;
+    padding: 10px 20px; border-radius: 20px; cursor: pointer; font-weight: 500; transition: 0.2s;
+}
+#send-message-btn:hover { background-color: #005f92; }
+
+/* =========================================
+   10. SCHEDULE PAGE STYLES
+   ========================================= */
+.rider-select {
+    padding: 5px 10px; border: 1px solid #ccc; border-radius: 4px;
+    font-size: 0.85rem; background: #fff; color: #333; cursor: pointer;
+}
+
+.dispatch-btn {
+    background-color: var(--color-white); color: #2E7D32; 
+    border: 1px solid #2E7D32; padding: 5px 12px; border-radius: 4px;
+    font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: 0.2s;
+}
+.dispatch-btn:hover { background-color: #2E7D32; color: #fff; }
+
+/* =========================================
+   11. RESPONSIVE (CARD VIEW FOR TABLES)
+   ========================================= */
+
+.hamburger-btn { display: none !important; cursor: pointer; font-size: 32px; }
+
+@media (max-width: 900px) {
+    /* 1. Layout Adjustments */
+    .container { display: block; }
+    .sidebar { 
+        position: fixed; left: -100%; top: 0; height: 100vh; width: 250px; 
+        z-index: 999; box-shadow: 2px 0 10px rgba(0,0,0,0.1); 
+    }
+    .sidebar.active { left: 0; }
+    .main-content { width: 100%; padding: 1rem; margin-top: 50px; }
+    
+    .hamburger-btn { 
+        display: block !important; position: fixed; top: 15px; left: 15px; 
+        z-index: 1000; background: #f0f0f0; padding: 5px; border-radius: 5px; color: #333; 
+    }
+    .main-header { justify-content: flex-end; padding-left: 0; margin-bottom: 1rem; }
+    .main-header h1 { display: none; }
+
+    /* 2. CARD TABLE TRANSFORMATION (NO SCROLLING) */
+    .table-responsive { overflow: visible; }
+    .custom-table thead { display: none; }
+    
+    .custom-table, .custom-table tbody, .custom-table tr, .custom-table td {
+        display: block; width: 100%;
+    }
+    
+    .custom-table tr {
+        margin-bottom: 1rem;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #e9ecef;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        padding-bottom: 0.5rem;
+    }
+    
+    .custom-table td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+        padding: 0.8rem 1rem;
+        border-bottom: 1px solid #f0f0f0;
+        min-height: 40px;
+    }
+    
+    .custom-table td:last-child { border-bottom: none; }
+
+    /* Inject Labels via CSS using data-label attribute */
+    .custom-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #8898aa;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        text-align: left;
+        margin-right: 1rem;
+    }
+    
+    /* Specific Fixes for Schedule Page inputs on mobile */
+    .rider-select { width: 60%; } /* Prevent dropdown being too small */
+
+    /* Specific Fixes for Long Content */
+    .td-details { 
+        flex-direction: column; align-items: flex-start !important; text-align: left !important; 
+    }
+    .td-details::before { margin-bottom: 5px; }
+    
+    /* Center Actions on Mobile */
+    .actions { width: 100%; justify-content: flex-end; }
+    
+    /* 3. OTHER ELEMENTS */
+    .dashboard-cards, .dashboard-info-grid, .customer-grid { grid-template-columns: 1fr; }
+    .table-header-control, .control-group, .header-actions { flex-direction: column; gap: 10px; width: 100%; }
+    .search-box, .filter-box, .search-bar, .add-new-btn { width: 100%; }
+    .search-box input { width: 100%; }
+}
+
+/* =========================================
+   12. CUSTOM EDIT MODAL STYLES (SLIDE FROM TOP)
+   ========================================= */
+.custom-modal {
+    /* Layout Properties */
+    display: flex; 
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    
+    /* Center alignment */
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 50px; 
+    
+    backdrop-filter: blur(2px);
+    overflow-y: auto;
+    
+    /* === TRANSITION FOR BACKGROUND OVERLAY === */
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+/* State when modal is open */
+.custom-modal.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.custom-modal-content {
+    background-color: var(--color-white);
+    border-radius: var(--border-radius-1);
+    
+    width: 90%;
+    max-width: 450px;
+    margin: 0 auto;
+    
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+
+    /* === ANIMATION: START OFF-SCREEN TOP === */
+    opacity: 0;
+    transform: translateY(-100vh); /* Start completely above viewport */
+    
+    /* Smooth transition with bezier for a "drop" feel */
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease-out;
+}
+
+/* State when modal is open: DROP TO CENTER */
+.custom-modal.active .custom-modal-content {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.custom-modal-header {
+    padding: 1.2rem;
+    border-bottom: 1px solid var(--color-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #fff;
+    border-radius: var(--border-radius-1) var(--border-radius-1) 0 0;
+}
+
+.custom-modal-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: var(--color-dark);
+}
+
+.close-modal-btn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--color-light);
+    line-height: 1;
+    padding: 0 5px;
+    transition: transform 0.2s ease;
+}
+
+.close-modal-btn:hover { 
+    color: var(--color-dark); 
+    transform: rotate(90deg); /* Added a nice spin effect on close hover */
+}
+
+.custom-modal-body {
+    padding: 1.5rem;
+    background-color: #fff;
+    flex-grow: 1;
+    min-height: 150px;
+}
+
+.custom-modal-body p {
+    margin-bottom: 1rem;
+    color: var(--color-light);
+    font-size: 0.95rem;
+}
+
+.input-group {
+    width: 100%;
+    display: block;
+}
+
+.custom-modal-footer {
+    padding: 1rem 1.2rem;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    background-color: #f8f9fa;
+    border-radius: 0 0 var(--border-radius-1) var(--border-radius-1);
+}
+
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: 0.2s;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+.btn-secondary:hover { background-color: #5a6268; }
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+}
+.btn-primary:hover { background-color: #005f92; }
+
+/* === MOBILE FIXES === */
+@media (max-width: 600px) {
+    .custom-modal {
+        padding-top: 10%;
+        align-items: flex-start; 
+    }
+
+    .custom-modal-content {
+        width: 92%;
+        max-width: 92%;
+        margin: 0 auto;
+    }
+    
+    .custom-modal-body {
+        padding: 1.2rem;
+    }
+}
+
+/* =========================================
+   13. CUSTOM SELECT DROPDOWN STYLES
+   ========================================= */
+.custom-select-wrapper {
+    position: relative;
+    user-select: none;
+    width: 100%;
+}
+
+.custom-select {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* The Box (Trigger) */
+.custom-select-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 15px;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--color-dark);
+    line-height: 1.5;
+    background: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.custom-select.open .custom-select-trigger {
+    border: 1px solid var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.1);
+}
+
+/* Custom Arrow (CSS Border Triangle) */
+.custom-select-trigger .arrow {
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #6c757d;
+    border-bottom: 2px solid #6c757d;
+    transform: rotate(45deg) translateY(-2px);
+    transition: transform 0.3s;
+}
+
+.custom-select.open .custom-select-trigger .arrow {
+    transform: rotate(225deg) translateY(-2px);
+    border-color: var(--color-primary);
+}
+
+/* The Dropdown List */
+.custom-options {
+    position: absolute;
+    display: block;
+    top: 100%;
+    left: 0;
+    right: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: all 0.2s;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    z-index: 2005; /* Higher than modal */
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+/* Open State for List */
+.custom-select.open .custom-options {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: all;
+}
+
+/* The Options */
+.custom-option {
+    position: relative;
+    display: block;
+    padding: 12px 15px;
+    font-size: 16px;
+    color: var(--color-dark);
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+/* Hover & Selected State (Blue Background) */
+.custom-option:hover,
+.custom-option.selected {
+    background-color: var(--color-primary);
+    color: #fff;
+}
+

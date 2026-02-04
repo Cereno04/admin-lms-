@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanWash - Dashboard</title>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="logo.png" alt="OceanWash Logo" class="logo-img">
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="../include/dashboard.html" class="nav-link active">
+                        <span class="material-icons-sharp">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/orders.html" class="nav-link">
+                        <span class="material-icons-sharp">receipt_long</span>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/schedule.html" class="nav-link">
+                        <span class="material-icons-sharp">local_shipping</span>
+                        <span>Delivery Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/customers.html" class="nav-link">
+                        <span class="material-icons-sharp">people</span>
+                        <span>Customers</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../include/login.html" class="nav-link" id="logout-btn">
+                    <span class="material-icons-sharp">logout</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Dashboard</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin">
+                    <span>Admin</span>
+                </div>
+            </header>
+
+            <section class="page-content">
+                <!-- Top Stats Cards -->
+                <div class="dashboard-cards">
+                    <div class="card card-red">
+                        <h3>New Orders</h3>
+                        <div class="card-main">
+                            <span class="material-icons-sharp card-icon">hourglass_empty</span>
+                            <span class="count">1</span>
+                        </div>
+                    </div>
+                    <div class="card card-blue">
+                        <h3>In Progress</h3>
+                        <div class="card-main">
+                            <span class="material-icons-sharp card-icon">local_laundry_service</span>
+                            <span class="count">0</span>
+                        </div>
+                    </div>
+                    <div class="card card-purple">
+                        <h3>Out for Delivery</h3>
+                        <div class="card-main">
+                            <span class="material-icons-sharp card-icon">local_shipping</span>
+                            <span class="count">1</span>
+                        </div>
+                    </div>
+                    <div class="card card-green">
+                        <h3>Completed Orders</h3>
+                        <div class="card-main">
+                            <span class="material-icons-sharp card-icon">check_circle</span>
+                            <span class="count">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Extended Dashboard Area (Charts & Info) -->
+                <div class="dashboard-extended">
+                    
+                    <!-- Chart Section -->
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h2><span class="material-icons-sharp">show_chart</span> Order & Revenue Trends (Weekly)</h2>
+                        </div>
+                        <!-- Canvas for Chart (You can initialize Chart.js here later) -->
+                        <canvas id="revenueChart" height="100"></canvas>
+                        <p style="text-align:center; color:#999; margin-top: 50px;">(Chart Data Placeholder)</p>
+                    </div>
+
+                    <!-- Bottom Grid: Services & Info -->
+                    <div class="dashboard-info-grid">
+                        
+                        <!-- Services Card -->
+                        <div class="info-card">
+                            <div class="info-header">
+                                <h3><span class="material-icons-sharp">settings</span> Services & Pricing</h3>
+                                <button class="manage-btn">Manage</button>
+                            </div>
+                            <p>Update your laundry service prices and add new packages here.</p>
+                            <span class="material-icons-outlined" style="margin-top:10px; color:#666;">info</span>
+                        </div>
+
+                        <!-- Service Information Card -->
+                        <div class="info-card">
+                            <div class="info-header">
+                                <h3><span class="material-icons-sharp">info</span> Service Information</h3>
+                            </div>
+                            <div class="info-content">
+                                <h4>Operating Area</h4>
+                                <p>Our pickup and delivery service exclusively covers <strong>Tabada, Mambaling, Cebu City</strong>.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+    
+    <script src="../script.js" type="module"></script>
+</body>
+</html>

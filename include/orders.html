@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Orders</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/logo1.png" alt="OceanWash Logo" class="logo-img">
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="../include/dashboard.html" class="nav-link">
+                        <span class="material-icons-sharp">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/orders.html" class="nav-link active">
+                        <span class="material-icons-sharp">receipt_long</span>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/schedule.html" class="nav-link">
+                        <span class="material-icons-sharp">local_shipping</span>
+                        <span>Delivery Schedule</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="../include/customers.html" class="nav-link">
+                        <span class="material-icons-sharp">people</span>
+                        <span>Customers</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../include/login.html" class="nav-link" id="logout-btn">
+                    <span class="material-icons-sharp">logout</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Manage Orders</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin">
+                    <span>Admin</span>
+                </div>
+            </header>
+
+            <section class="page-content">
+                <!-- Search & Filter Header -->
+                <div class="table-header-control">
+                    <h2>All Customer Orders</h2>
+                    <div class="control-group">
+                        <div class="search-box">
+                            <span class="material-icons-outlined">search</span>
+                            <input type="text" placeholder="Search by name...">
+                        </div>
+                        <div class="filter-box">
+                            <span class="material-icons-outlined">filter_list</span>
+                            <select>
+                                <option>All Status</option>
+                                <option>Pending</option>
+                                <option>Processing</option>
+                                <option>Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Table Container -->
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th width="3%">#</th>
+                                <th width="10%">DATE</th>
+                                <th width="15%">NAME</th>
+                                <th width="15%">ADDRESS</th>
+                                <th width="10%">CONTACT</th>
+                                <th width="25%">ORDER DETAILS</th>
+                                <th width="5%">TOTAL</th>
+                                <th width="10%">STATUS</th>
+                                <th width="7%">ACTIONS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-table-body">
+                            <!-- JS will inject rows here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-container">
+                    <span class="entries-text" id="entries-info">Showing 0 entries</span>
+                    <!-- ID added here for JS to target -->
+                    <div class="pagination-buttons" id="pagination-buttons">
+                        <!-- JS will inject buttons here -->
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- CUSTOM EDIT STATUS MODAL -->
+    <div id="editStatusModal" class="custom-modal">
+        <div class="custom-modal-content">
+            <div class="custom-modal-header">
+                <h3>Update Order Status</h3>
+                <span class="close-modal-btn">&times;</span>
+            </div>
+            <div class="custom-modal-body">
+                <p>Select the new status for this order:</p>
+                <div class="input-group">
+                    <!-- CUSTOM DROPDOWN STRUCTURE -->
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select">
+                            <div class="custom-select-trigger">
+                                <span>Pending</span>
+                                <div class="arrow"></div>
+                            </div>
+                            <div class="custom-options">
+                                <!-- FIX: data-value must match option values exactly -->
+                                <span class="custom-option" data-value="Pending">Pending</span>
+                                <span class="custom-option" data-value="Processing">Processing</span>
+                                <span class="custom-option" data-value="Completed">Completed</span>
+                            </div>
+                        </div>
+                        <!-- Hidden Native Select for Logic Compatibility -->
+                        <select id="modalStatusSelect" style="display: none;">
+                            <!-- FIX: Values here must match data-value above -->
+                            <option value="Pending">Pending</option>
+                            <option value="Processing">Processing</option>
+                            <option value="Completed">Completed</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="custom-modal-footer">
+                <button id="modalCancelBtn" class="btn btn-secondary">Cancel</button>
+                <button id="modalSaveBtn" class="btn btn-primary">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../script.js" type="module"></script>
+</body>
+</html>
