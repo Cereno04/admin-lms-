@@ -7,127 +7,165 @@
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
-    <link rel="icon" type="image/png" href="assets/wave.png">
+    <style>
+        :root { --primary: #1a73e8; --bg: #f8fafd; }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; color: #333; }
+
+        /* RESPONSIVE TABLE */
+        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .custom-table { width: 100%; border-collapse: collapse; }
+        .custom-table th { background: #f1f4f9; padding: 15px; text-align: left; font-size: 13px; color: #555; }
+        .custom-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+
+        @media (max-width: 1024px) {
+            .custom-table thead { display: none; }
+            .custom-table tr { display: block; border: 1px solid #eee; margin-bottom: 15px; border-radius: 10px; background: white; padding: 10px; }
+            .custom-table td { display: flex; justify-content: space-between; border: none; text-align: right; padding: 8px 10px; }
+            .custom-table td::before { content: attr(data-label); font-weight: 700; color: #777; float: left; }
+        }
+
+        /* MODAL ALERTS (FIXED DESIGN) */
+        .custom-alert-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px;
+        }
+        .custom-alert-overlay.active { display: flex; }
+        
+        .custom-alert-card { background: white; width: 100%; max-width: 320px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+        .alert-header { background: #f1f1f1; padding: 10px 15px; font-size: 11px; color: #888; border-bottom: 1px solid #ddd; }
+        .alert-body { padding: 25px; text-align: center; font-size: 14px; }
+        .alert-footer { padding: 10px; text-align: right; }
+        #alert-ok-btn { background: var(--primary); color: white; border: none; padding: 6px 20px; border-radius: 4px; cursor: pointer; }
+
+        .confirm-card { background: white; width: 100%; max-width: 360px; padding: 30px; border-radius: 15px; text-align: center; }
+        .confirm-icon { font-size: 50px; color: #f8bb86; margin-bottom: 15px; border: 3px solid #f8bb86; border-radius: 50%; width: 70px; height: 70px; line-height: 70px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
+        .confirm-footer { display: flex; gap: 10px; margin-top: 25px; }
+        .confirm-btn-yes { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: 600; }
+        .confirm-btn-cancel { background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; flex: 1; }
+
+        /* MODAL FORM GRID */
+        .modal-body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        @media (max-width: 600px) { .modal-body-grid { grid-template-columns: 1fr; } }
+        .field { display: flex; flex-direction: column; }
+        .field label { font-size: 11px; font-weight: 700; margin-bottom: 4px; color: #777; text-transform: uppercase; }
+        .field input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; }
+        .field input[readonly] { background: #f0f7ff; border: 1px dashed var(--primary); font-weight: bold; color: var(--primary); }
+    </style>
 </head>
 <body>
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="../assets/logo1.png" alt="OceanWash Logo" class="logo-img">
-            </div>
+            <div class="sidebar-header"><img src="../assets/logo1.png" style="width: 140px;"></div>
             <ul class="sidebar-nav">
                 <li class="nav-item"><a href="./dashboard.html" class="nav-link"><span class="material-icons-sharp">dashboard</span><span>Dashboard</span></a></li>
                 <li class="nav-item"><a href="./orders.html" class="nav-link"><span class="material-icons-sharp">receipt_long</span><span>Orders</span></a></li>
                 <li class="nav-item"><a href="./schedule.html" class="nav-link active"><span class="material-icons-sharp">local_shipping</span><span>RIDER</span></a></li>
                 <li class="nav-item"><a href="./customers.html" class="nav-link"><span class="material-icons-sharp">people</span><span>Customers</span></a></li>
             </ul>
-            <div class="sidebar-footer">
-                <a href="../include/login.html" class="nav-link" id="logout-btn">
-                    <span class="material-icons-sharp">logout</span><span>Logout</span>
-                </a>
-            </div>
         </aside>
 
-        <main class="main-content">
-            <header class="main-header">
-                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
-                <h1>Rider Management</h1>
-                <div class="admin-profile">
-                    <img src="../assets/user.png" alt="Admin Avatar">
-                    <span>Admin</span>
-                </div>
+        <main class="main-content" style="padding: 20px;">
+            <header style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
+                <span class="material-icons-sharp" id="hamburger-btn" style="cursor: pointer; font-size: 28px;">menu</span>
+                <h1 style="margin: 0; font-size: 24px;">Rider Directory</h1>
             </header>
 
-            <section class="page-content">
-                <div class="page-header">
-                    <h2>Rider Directory</h2>
-                    <button class="add-new-btn" id="open-rider-modal">
-                        <span class="material-icons-sharp">person_add</span> Add New Rider
-                    </button>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="custom-table">
-                        <thead>
-                            <tr>
-                                <th width="15%">Rider ID (APP LOGIN)</th>
-                                <th width="25%">Full Name</th>
-                                <th width="25%">Email</th>
-                                <th width="15%">Phone</th>
-                                <th width="10%">Status</th>
-                                <th width="10%">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody id="rider-table-body"></tbody>    
-                    </table>
-                </div>
-            </section>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                <h3 style="margin: 0; color: #666;">Account Management</h3>
+                <button class="add-new-btn" id="open-rider-modal" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                    <span class="material-icons-sharp">person_add</span> Add New Rider
+                </button>
+            </div>
+
+            <div class="table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Rider ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Motorcycle</th>
+                            <th>Plate #</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rider-table-body"></tbody>
+                </table>
+            </div>
         </main>
     </div>
 
-    <!-- ADD RIDER MODAL -->
+    <!-- RIDER ACCOUNT MODAL -->
     <div id="riderModal" class="custom-modal">
-        <div class="custom-modal-content">
-            <div class="custom-modal-header">
-                <h3>Register New Rider</h3>
-                <span class="close-modal-btn" id="close-rider-modal">&times;</span>
+        <div class="custom-modal-content" style="max-width: 600px; padding: 0; border-radius: 12px; overflow: hidden;">
+            <div style="padding: 18px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 18px;">Rider Account Setup</h3>
+                <span style="cursor: pointer; font-size: 24px;" onclick="document.getElementById('riderModal').classList.remove('active')">&times;</span>
             </div>
             <form id="rider-form">
-                <div class="custom-modal-body">
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Rider ID</label>
-                        <input type="text" id="rider-id" readonly style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px; background:#f0f0f0;">
+                <div class="modal-body-grid">
+                    <div class="field">
+                        <label>Rider ID (Fixed)</label>
+                        <input type="text" id="rider-id" readonly>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Full Name</label>
-                        <input type="text" id="rider-name" placeholder="John Doe" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    <div class="field">
+                        <label>Full Name</label>
+                        <input type="text" id="rider-name" placeholder="John Doe" required>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Login Email</label>
-                        <input type="email" id="rider-email" placeholder="rider@oceanwash.com" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    <div class="field">
+                        <label>Login Email</label>
+                        <input type="email" id="rider-email" placeholder="rider@oceanwash.com" required>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Phone Number</label>
-                        <input type="text" id="rider-phone" placeholder="09123456789" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    <div class="field">
+                        <label>Phone Number</label>
+                        <input type="text" id="rider-phone" placeholder="09123456789" required>
                     </div>
-                    <div style="margin-bottom: 15px;">
-                        <label style="display:block; font-size: 0.8rem; font-weight: 600; margin-bottom: 5px;">Login Password</label>
-                        <input type="password" id="rider-password" placeholder="******" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:5px;" required>
+                    <div class="field">
+                        <label>Motorcycle Model</label>
+                        <input type="text" id="rider-motorcycle" placeholder="e.g. Honda Click 125i" required>
+                    </div>
+                    <div class="field">
+                        <label>Plate Number</label>
+                        <input type="text" id="rider-plate" placeholder="e.g. 123ABC / ABC 1234" required>
+                    </div>
+                    <div class="field" style="grid-column: span 2;">
+                        <label>Rider App Password</label>
+                        <input type="password" id="rider-password" placeholder="Create login password" required>
                     </div>
                 </div>
-                <div class="custom-modal-footer">
-                    <button type="button" class="btn btn-secondary" id="cancel-rider">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Rider</button>
+                <div style="padding: 20px; display: flex; gap: 10px; border-top: 1px solid #eee; background: #fafafa;">
+                    <button type="button" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: white;" onclick="document.getElementById('riderModal').classList.remove('active')">Cancel</button>
+                    <button type="submit" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Register Rider</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- IMAGE 1 STYLE: CUSTOM ALERT -->
+    <!-- CUSTOM ALERT (IMAGE 1 STYLE) -->
     <div id="alert-modal" class="custom-alert-overlay">
         <div class="custom-alert-card">
-            <div class="alert-header">127.0.0.1:5501 says</div>
-            <div class="alert-body" id="alert-message">This account already exists!</div>
-            <div class="alert-footer">
-                <button id="alert-ok-btn">OK</button>
+            <div class="alert-header">OceanWash Admin Portal</div>
+            <div class="alert-body" id="alert-message">Action processed.</div>
+            <div class="alert-footer"><button id="alert-ok-btn">OK</button></div>
+        </div>
+    </div>
+
+    <!-- CUSTOM CONFIRM (IMAGE 2 STYLE) -->
+    <div id="confirm-modal" class="custom-alert-overlay">
+        <div class="confirm-card">
+            <div class="confirm-icon"><span class="material-icons-sharp">priority_high</span></div>
+            <h2 id="confirm-title" style="margin: 0; font-size: 20px;">Are you sure?</h2>
+            <p id="confirm-message" style="color: #666; margin-top: 10px; font-size: 14px;">Please confirm to proceed.</p>
+            <div class="confirm-footer">
+                <button class="confirm-btn-cancel" id="confirm-cancel-btn">Cancel</button>
+                <button class="confirm-btn-yes" id="confirm-yes-btn">Yes, Confirm</button>
             </div>
         </div>
     </div>
 
-    <!-- IMAGE 2 STYLE: CUSTOM CONFIRM -->
-    <div id="confirm-modal" class="custom-alert-overlay">
-        <div class="confirm-card">
-            <div class="confirm-icon">!</div>
-            <h2 id="confirm-title">Are you sure?</h2>
-            <p id="confirm-message">You have unsaved changes</p>
-            <div class="confirm-footer">
-                <button class="confirm-btn-cancel" id="confirm-cancel-btn">Cancel</button>
-                <button class="confirm-btn-yes" id="confirm-yes-btn">Yes</button>
-            </div>
-        </div>
-    </div>
-    
     <script type="module" src="../script.js"></script>
 </body>
 </html>
