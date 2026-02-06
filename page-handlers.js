@@ -1,4 +1,3 @@
-// js/page-handlers.js
 import { db } from './firebase-core.js';
 
 import {
