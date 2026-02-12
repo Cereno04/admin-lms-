@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OceanWash - Dispatch Center</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="icon" type="image/png" href="../assets/wave.png">
+
+    <style>
+        /* --- DISPATCH PAGE SPECIFIC STYLES --- */
+        
+        /* Top Stats Area */
+        .dispatch-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+        
+        .header-text h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 5px; }
+        .header-text p { color: #64748b; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
+        .status-dot-green { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; }
+
+        .header-stats { display: flex; gap: 1rem; }
+        .stat-badge {
+            background: #fff;
+            padding: 10px 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            text-align: center;
+            min-width: 120px;
+        }
+        .stat-badge small { display: block; color: #94a3b8; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+        .stat-badge strong { font-size: 1.4rem; color: #0077B6; line-height: 1.2; }
+
+        /* Section Titles */
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 2rem 0 1rem 0;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #334155;
+        }
+        .section-icon { 
+            padding: 5px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+        }
+        .icon-orange { background: #fff7ed; color: #f97316; }
+        .icon-green { background: #ecfdf5; color: #10b981; }
+
+        /* Order Cards Grid */
+        .pipeline-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .order-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s;
+            position: relative;
+        }
+        .order-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+
+        .card-top { display: flex; justify-content: space-between; margin-bottom: 10px; }
+        .order-id { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .order-price { font-size: 1.2rem; font-weight: 800; color: #0077B6; }
+
+        .card-body h3 { font-size: 1.1rem; color: #1e293b; margin-bottom: 5px; }
+        .card-address { display: flex; align-items: flex-start; gap: 5px; color: #64748b; font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.5rem; }
+        .card-address span { font-size: 16px; margin-top: 2px; }
+
+        .assign-btn {
+            width: 100%;
+            background: #0f172a; /* Dark Navy */
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+        .assign-btn:hover { background: #334155; }
+
+        /* Fleet Grid */
+        .fleet-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .rider-card {
+            background: #fff;
+            padding: 1rem;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid #f1f5f9;
+        }
+        
+        .rider-avatar {
+            width: 40px; height: 40px;
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; color: #475569;
+        }
+        .avatar-green { background: #d1fae5; color: #065f46; }
+        .avatar-orange { background: #ffedd5; color: #9a3412; }
+
+        .rider-info { flex: 1; }
+        .rider-info h4 { font-size: 0.9rem; color: #334155; margin-bottom: 2px; }
+        .rider-status { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+        .status-avail { color: #10b981; }
+        .status-busy { color: #f97316; }
+
+        .status-indicator { width: 8px; height: 8px; border-radius: 50%; }
+        .bg-green { background: #10b981; }
+        .bg-orange { background: #f97316; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <img src="../assets/logo1.png" alt="OceanWash Logo" class="logo-img">
+            </div>
+            <ul class="sidebar-nav">
+                <li class="nav-item">
+                    <a href="./dashboard.html" class="nav-link">
+                        <span class="material-icons-sharp">dashboard</span>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./orders.html" class="nav-link">
+                        <span class="material-icons-sharp">receipt_long</span>
+                        <span>Orders</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./schedule.html" class="nav-link">
+                        <span class="material-icons-sharp">local_shipping</span>
+                        <span>Rider</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="./customers.html" class="nav-link">
+                        <span class="material-icons-sharp">people</span>
+                        <span>Customers</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <!-- Active Class Here -->
+                    <a href="./dispatch.html" class="nav-link active">
+                        <span class="material-icons-sharp">send</span>
+                        <span>Dispatch</span>
+                    </a>
+                </li>
+            </ul>
+            <div class="sidebar-footer">
+                <a href="../include/login.html" class="nav-link" id="logout-btn">
+                    <span class="material-icons-sharp">logout</span>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            
+            <!-- Custom Dispatch Header -->
+            <div class="dispatch-header-content">
+                <div class="header-text">
+                    <h1>Dispatch Command Center</h1>
+                    <p><span class="status-dot-green"></span> Operational Monitoring</p>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-badge">
+                        <small>Available Fleet</small>
+                        <strong>--</strong>
+                    </div>
+                    <div class="stat-badge">
+                        <small>Active Jobs</small>
+                        <strong>--</strong>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SECTION 1: ORDER PIPELINE -->
+            <div class="section-title">
+                <div class="section-icon icon-orange">
+                    <span class="material-icons-sharp" style="font-size: 18px;">warning</span>
+                </div>
+                Order Pipeline Queue (All Orders)
+            </div>
+
+            <!-- Dynamic Content Container -->
+            <div class="pipeline-grid" id="dispatch-orders-container">
+                <p>Loading orders...</p>
+            </div>
+
+            <!-- SECTION 2: FLEET AVAILABILITY -->
+            <div class="section-title">
+                <div class="section-icon icon-green">
+                    <span class="material-icons-sharp" style="font-size: 18px;">electric_bolt</span>
+                </div>
+                Riders Available
+            </div>
+
+            <!-- Dynamic Fleet Container -->
+            <div class="fleet-grid" id="dispatch-fleet-container">
+                 <p>Loading fleet...</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- START: ASSIGN RIDER MODAL (UPDATED DESIGN) -->
+    <div class="modal-overlay" id="assignModal">
+        <div class="assign-modal-card">
+            <div class="modal-header">
+                <h2>Assign Rider</h2>
+                <span class="close-modal" id="closeAssignModal">&times;</span>
+            </div>
+    
+            <!-- 1. ORDER INFO (Blue Box) -->
+            <div class="order-info-box">
+                <div class="info-header">
+                    <span class="info-label">ORDER INFO</span>
+                    <span class="info-price" id="modal-order-price">₱0</span>
+                </div>
+                <span class="customer-name" id="modal-customer-name">Loading...</span>
+                <span class="customer-address" id="modal-customer-addr">Loading...</span>
+            </div>
+
+            <!-- 2. AI RECOMMENDATION (Green Box) -->
+            <div class="ai-rec-box" id="ai-rec-box">
+                <div class="ai-icon">
+                    <span class="material-icons-sharp">auto_awesome</span>
+                </div>
+                <div class="ai-text">
+                    <strong>AI RECOMMENDATION</strong>
+                    <p id="ai-rec-text">Analyzing fleet availability...</p>
+                </div>
+            </div>
+    
+            <span class="fleet-label">AVAILABLE FLEET</span>
+    
+            <!-- 3. FLEET LIST (Hidden Scrollbar) -->
+            <div class="modal-fleet-list" id="modal-fleet-list">
+                <!-- JavaScript will inject riders here -->
+            </div>
+    
+            <div class="modal-footer">
+                <button class="cancel-link" id="cancelAssignBtn">CANCEL</button>
+            </div>
+        </div>
+    </div>
+    <!-- END: ASSIGN RIDER MODAL -->
+    
+    <script type="module" src="../script.js"></script>
+</body>
+</html>

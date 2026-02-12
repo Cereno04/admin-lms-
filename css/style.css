@@ -738,3 +738,175 @@ body {
     color: #fff;
 }
 
+/* =========================================
+   14. ASSIGN RIDER MODAL STYLES (UPDATED)
+   ========================================= */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Darker backdrop */
+    z-index: 3000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(3px);
+}
+
+.modal-overlay.active {
+    display: flex;
+}
+
+.assign-modal-card {
+    background: #fff;
+    width: 370px; /* Fixed width like the image */
+    border-radius: 24px; /* More rounded */
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+    animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-header h2 { font-size: 1.1rem; color: #1e293b; font-weight: 700; margin: 0; }
+.close-modal { cursor: pointer; color: #94a3b8; font-size: 1.5rem; line-height: 1; }
+.close-modal:hover { color: #64748b; }
+
+/* --- 1. Order Info Box (Blue) --- */
+.order-info-box {
+    background: #f0f9ff; /* Light Blue */
+    border: 1px solid #bae6fd;
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.info-header { display: flex; justify-content: space-between; margin-bottom: 8px; align-items: center; }
+.info-label { color: #38bdf8; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
+.info-price { color: #0284c7; font-weight: 700; font-size: 1.1rem; }
+
+.customer-name { font-size: 1rem; font-weight: 700; color: #0f172a; display: block; margin-bottom: 2px;}
+.customer-address { font-size: 0.85rem; color: #64748b; display: block; line-height: 1.4; }
+
+/* --- 2. AI Recommendation Box (Green) --- */
+.ai-rec-box {
+    background: #ecfdf5; /* Light Green */
+    border: 1px solid #6ee7b7; /* Green Border */
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 24px;
+    display: flex;
+    gap: 12px;
+}
+
+.ai-icon {
+    width: 32px; height: 32px;
+    background: #10b981;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: white;
+    flex-shrink: 0;
+}
+.ai-icon span { font-size: 18px; }
+
+.ai-text strong { display: block; font-size: 0.75rem; color: #047857; font-weight: 800; text-transform: uppercase; margin-bottom: 4px; }
+.ai-text p { font-size: 0.8rem; color: #065f46; font-style: italic; line-height: 1.4; margin: 0; }
+
+/* --- 3. Fleet List (No Scroll Visual) --- */
+.fleet-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.modal-fleet-list {
+    flex: 1; /* Takes remaining space */
+    max-height: 250px; /* Limit height */
+    overflow-y: auto; /* Allow scroll */
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-right: 5px;
+    
+    /* HIDE SCROLLBAR (Chrome/Safari/Opera) */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+.modal-fleet-list::-webkit-scrollbar {
+    display: none;
+}
+
+.rider-select-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.rider-select-item:hover {
+    border-color: #10b981;
+    background: #f0fdf4;
+}
+/* AI Pick Badge Style */
+.ai-pick-badge {
+    background: #10b981; color: white;
+    font-size: 0.6rem; font-weight: 800;
+    padding: 2px 6px; border-radius: 4px;
+    margin-left: 8px; vertical-align: middle;
+}
+
+.rider-initial {
+    width: 42px; height: 42px;
+    background: #f1f5f9;
+    color: #64748b;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem;
+    margin-right: 12px;
+}
+
+.rider-details { flex: 1; }
+.rider-name { font-size: 0.95rem; font-weight: 600; color: #334155; display: block; }
+.rider-stats { font-size: 0.75rem; color: #94a3b8; }
+
+.status-tag {
+    font-size: 0.65rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+.tag-busy { background: #fff7ed; color: #f97316; }
+.tag-avail { background: #fff; border: 1px solid #e2e8f0; color: #64748b; }
+
+.modal-footer { text-align: center; margin-top: 20px; }
+.cancel-link {
+    background: none; border: none;
+    color: #94a3b8; font-weight: 700; font-size: 0.85rem;
+    cursor: pointer; text-transform: uppercase; letter-spacing: 1px;
+}
+.cancel-link:hover { color: #64748b; }
