@@ -1,6 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-// 1. ADDED 'setDoc' TO IMPORTS BELOW
-import { getFirestore, collection, query, orderBy, onSnapshot, doc, deleteDoc, addDoc, updateDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+import { getFirestore, collection, query, orderBy, onSnapshot, doc, deleteDoc, addDoc, updateDoc, setDoc, getDocs, where } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhmIgCu9SwFNIN5inMimRnPJAgmvkAh9s",
@@ -33,7 +32,56 @@ function showConfirm(title, message) {
 }
 
 // ======================================================
-//  2. ORDERS MANAGEMENT LOGIC (WITH PAGINATION)
+//  2. DASHBOARD STATS LOGIC (NEW ADDITION)
+// ======================================================
+export function initializeDashboardStats() {
+    // Select the count elements based on the HTML classes
+    const newOrdersCount = document.querySelector('.card-red .count');
+    const inProgressCount = document.querySelector('.card-blue .count');
+    const outForDeliveryCount = document.querySelector('.card-purple .count');
+    const completedCount = document.querySelector('.card-green .count');
+
+    // If we aren't on the dashboard page, stop
+    if (!newOrdersCount) return;
+
+    const q = query(collection(db, "orders"));
+
+    // Real-time listener
+    onSnapshot(q, (snapshot) => {
+        let pending = 0;
+        let processing = 0;
+        let delivery = 0;
+        let completed = 0;
+
+        snapshot.forEach((doc) => {
+            const data = doc.data();
+            const status = (data.status || "Pending").trim();
+
+            // Logic to categorize statuses
+            if (status === "Pending") {
+                pending++;
+            } 
+            else if (status === "Processing" || status === "Washing" || status === "Cleaning") {
+                processing++;
+            } 
+            else if (status === "Pickup" || status === "Ready" || status === "Out for Delivery" || status === "Ready for Pickup") {
+                delivery++;
+            } 
+            else if (status === "Completed" || status === "Done") {
+                completed++;
+            }
+        });
+
+        // Update the HTML
+        newOrdersCount.innerText = pending;
+        inProgressCount.innerText = processing;
+        outForDeliveryCount.innerText = delivery;
+        completedCount.innerText = completed;
+    });
+}
+
+// ======================================================
+//  3. ORDERS MANAGEMENT LOGIC (WITH PAGINATION)
 // ======================================================
 export function initializeOrders() {
     const tableBody = document.getElementById('orders-table-body');
@@ -263,7 +311,6 @@ export function initializeOrders() {
                     const userId = currentOrderData.userId;
                     
                     // 3️⃣ Sync to user's specific bookings subcollection
-                    // FIX: Changed from updateDoc to setDoc with merge:true to prevent "No document to update" error
                     const userBookingRef = doc(db, "users", userId, "bookings", currentOrderId);
                     await setDoc(userBookingRef, { status: newStatus }, { merge: true });
                     
@@ -280,9 +327,10 @@ export function initializeOrders() {
     }
 }
 
-// ... (Rest of your Dispatch and Rider code remains the same)
+// ======================================================
+//  4. SCHEDULE/RIDER LOGIC
+// ======================================================
 export async function initializeSchedule() {
-    // ... same code as before ...
     const tableBody = document.getElementById('rider-table-body');
     const riderForm = document.getElementById('rider-form');
     const modal = document.getElementById('riderModal');
@@ -362,6 +410,9 @@ export async function initializeSchedule() {
     };
 }
 
+// ======================================================
+//  5. DISPATCH LOGIC
+// ======================================================
 export function initializeDispatch() {
     const ordersContainer = document.getElementById('dispatch-orders-container');
     const fleetContainer = document.getElementById('dispatch-fleet-container');
@@ -593,6 +644,9 @@ export function initializeDispatch() {
     });
 }
 
+// ======================================================
+//  6. INITIALIZATION ROUTER
+// ======================================================
 document.addEventListener('DOMContentLoaded', () => {
     const hb = document.getElementById("hamburger-btn");
     const sb = document.getElementById("sidebar");
@@ -603,7 +657,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     console.log("Current page detected:", page);
 
-    if (page === 'schedule.html') {
+    if (page === 'dashboard.html' || page === '') {
+        // Initialize dashboard stats if on the dashboard
+        initializeDashboardStats();
+    } else if (page === 'schedule.html') {
         initializeSchedule();
     } else if (page === 'orders.html') {
         initializeOrders();
