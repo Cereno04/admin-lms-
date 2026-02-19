@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-import { getFirestore, collection, query, orderBy, onSnapshot, doc, deleteDoc, addDoc, updateDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// 1. ADDED 'setDoc' TO IMPORTS BELOW
+import { getFirestore, collection, query, orderBy, onSnapshot, doc, deleteDoc, addDoc, updateDoc, setDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBhmIgCu9SwFNIN5inMimRnPJAgmvkAh9s",
@@ -52,7 +53,7 @@ export function initializeOrders() {
     const customSelectTrigger = document.querySelector('.custom-select-trigger span');
     
     // Pagination State
-    let allOrders = []; // Stores all fetched data
+    let allOrders = []; 
     let currentPage = 1;
     const rowsPerPage = 5;
     let currentOrderId = null;
@@ -79,22 +80,18 @@ export function initializeOrders() {
     }
 
     // --- B. Render Functions (Pagination Logic) ---
-    
     function renderTable() {
         tableBody.innerHTML = '';
         
-        // 1. Sort Orders (Newest First)
         allOrders.sort((a, b) => {
             const dateA = a.timestamp ? a.timestamp.toDate() : (a.createdAt ? new Date(a.createdAt) : new Date(0));
             const dateB = b.timestamp ? b.timestamp.toDate() : (b.createdAt ? new Date(b.createdAt) : new Date(0));
             return dateB - dateA;
         });
 
-        // 2. Calculate Pagination Slices
         const totalItems = allOrders.length;
         const totalPages = Math.ceil(totalItems / rowsPerPage);
         
-        // Ensure current page is valid
         if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
         if (currentPage < 1) currentPage = 1;
 
@@ -102,7 +99,6 @@ export function initializeOrders() {
         const endIndex = Math.min(startIndex + rowsPerPage, totalItems);
         const paginatedItems = allOrders.slice(startIndex, endIndex);
 
-        // 3. Update "Showing X entries" text
         if (totalItems === 0) {
             entriesInfo.innerText = "Showing 0 entries";
             tableBody.innerHTML = '<tr><td colspan="9" style="text-align:center; padding:20px;">No orders found.</td></tr>';
@@ -112,13 +108,10 @@ export function initializeOrders() {
             entriesInfo.innerText = `Showing ${startIndex + 1} to ${endIndex} of ${totalItems} entries`;
         }
 
-        // 4. Generate Rows
         paginatedItems.forEach((data, index) => {
-            // Absolute index for the row number (#)
             const absoluteIndex = startIndex + index + 1;
             const id = data.id;
 
-            // Data Mapping
             const fullName = data.customerName || `${data.firstName || ''} ${data.lastName || ''}`.trim() || "Unknown";
             const price = data.totalPrice || data.price || 0;
             
@@ -138,6 +131,7 @@ export function initializeOrders() {
             const statusText = data.status || "Pending";
             if(statusText === "Completed") statusClass = "completed";
             if(statusText === "Processing" || statusText === "Pickup") statusClass = "processing";
+            if(statusText === "Ready for Pickup") statusClass = "processing"; 
 
             const row = `
                 <tr>
@@ -176,7 +170,6 @@ export function initializeOrders() {
         paginationButtons.innerHTML = '';
         if (totalPages <= 1) return;
 
-        // Prev Button
         const prevBtn = document.createElement('button');
         prevBtn.className = 'pg-btn';
         prevBtn.innerHTML = '«';
@@ -188,7 +181,6 @@ export function initializeOrders() {
         };
         paginationButtons.appendChild(prevBtn);
 
-        // Page Numbers
         for (let i = 1; i <= totalPages; i++) {
             const btn = document.createElement('button');
             btn.className = `pg-btn ${i === currentPage ? 'active' : ''}`;
@@ -200,7 +192,6 @@ export function initializeOrders() {
             paginationButtons.appendChild(btn);
         }
 
-        // Next Button
         const nextBtn = document.createElement('button');
         nextBtn.className = 'pg-btn';
         nextBtn.innerHTML = '»';
@@ -219,18 +210,16 @@ export function initializeOrders() {
     onSnapshot(q, (snapshot) => {
         allOrders = [];
         snapshot.forEach((docSnap) => {
-            // Save ID inside the object for easier access
             allOrders.push({ id: docSnap.id, ...docSnap.data() });
         });
-        
-        renderTable(); // Triggers render and pagination
+        renderTable(); 
     });
 
     // --- D. Window Actions ---
     window.openEditModal = (id, currentStatus) => {
         currentOrderId = id;
         modal.style.display = "block";
-        modal.classList.add('active'); // Ensure CSS transition works if set up
+        modal.classList.add('active'); 
         
         if(modalStatusSelect) modalStatusSelect.value = currentStatus;
         if(customSelectTrigger) customSelectTrigger.textContent = currentStatus;
@@ -261,21 +250,39 @@ export function initializeOrders() {
         modalSaveBtn.onclick = async () => {
             if (!currentOrderId) return;
             const newStatus = modalStatusSelect.value;
+    
             try {
-                await updateDoc(doc(db, "orders", currentOrderId), { status: newStatus });
+                // 1️⃣ Update Global Order (Main Collection)
+                const orderRef = doc(db, "orders", currentOrderId);
+                await updateDoc(orderRef, { status: newStatus });
+    
+                // 2️⃣ Find the specific order in our local list to get the userId
+                const currentOrderData = allOrders.find(o => o.id === currentOrderId);
+    
+                if (currentOrderData && currentOrderData.userId) {
+                    const userId = currentOrderData.userId;
+                    
+                    // 3️⃣ Sync to user's specific bookings subcollection
+                    // FIX: Changed from updateDoc to setDoc with merge:true to prevent "No document to update" error
+                    const userBookingRef = doc(db, "users", userId, "bookings", currentOrderId);
+                    await setDoc(userBookingRef, { status: newStatus }, { merge: true });
+                    
+                    console.log(`Synced status '${newStatus}' to user ${userId}`);
+                }
+    
                 hideModal();
+    
             } catch (error) {
-                console.error("Error updating:", error);
-                alert("Failed to update status.");
+                console.error("FULL ERROR:", error);
+                alert("Error updating status: " + error.message);
             }
         };
     }
 }
 
-// ======================================================
-//  3. RIDER MANAGEMENT LOGIC
-// ======================================================
+// ... (Rest of your Dispatch and Rider code remains the same)
 export async function initializeSchedule() {
+    // ... same code as before ...
     const tableBody = document.getElementById('rider-table-body');
     const riderForm = document.getElementById('rider-form');
     const modal = document.getElementById('riderModal');
@@ -355,29 +362,20 @@ export async function initializeSchedule() {
     };
 }
 
-// ======================================================
-//  4. DISPATCH CENTER LOGIC (UPDATED WITH MODAL)
-// ======================================================
 export function initializeDispatch() {
     const ordersContainer = document.getElementById('dispatch-orders-container');
     const fleetContainer = document.getElementById('dispatch-fleet-container');
-    
-    // Modal Elements
     const modal = document.getElementById('assignModal');
     const closeModalBtn = document.getElementById('closeAssignModal');
     const cancelBtn = document.getElementById('cancelAssignBtn');
     const modalFleetList = document.getElementById('modal-fleet-list');
 
-    // Pagination & State
     let allDispatchOrders = [];
-    let allRiders = []; // Store riders globally within this scope
+    let allRiders = []; 
     let currentPage = 1;
     const itemsPerPage = 6;
     let currentSelectedOrderId = null;
 
-    // --- 1. MODAL FUNCTIONS ---
-    
-    // Function to close modal
     const closeAssignModal = () => {
         if(modal) modal.classList.remove('active');
         currentSelectedOrderId = null;
@@ -386,24 +384,18 @@ export function initializeDispatch() {
     if(closeModalBtn) closeModalBtn.onclick = closeAssignModal;
     if(cancelBtn) cancelBtn.onclick = closeAssignModal;
 
-    // Function to Assign Rider (Updates Firebase)
     window.confirmAssignment = async (riderId, riderName) => {
         if(!currentSelectedOrderId) return;
         
         const confirmed = confirm(`Assign ${riderName} to this order?`);
         if(confirmed) {
             try {
-                // 1. Update Order Status
                 await updateDoc(doc(db, "orders", currentSelectedOrderId), {
-                    status: "Pickup", // Or "Processing" depending on your flow
+                    status: "Pickup", 
                     assignedRiderId: riderId,
                     assignedRiderName: riderName,
                     assignedAt: new Date()
                 });
-
-                // 2. Optional: Update Rider Status to 'Busy'
-                // await updateDoc(doc(db, "riders", riderId), { status: "Busy" });
-
                 alert("Rider assigned successfully!");
                 closeAssignModal();
             } catch (error) {
@@ -413,25 +405,19 @@ export function initializeDispatch() {
         }
     };
 
-    // Main Function to Open Modal (Triggered by HTML button)
     window.assignRider = (orderId) => {
         currentSelectedOrderId = orderId;
         const order = allDispatchOrders.find(o => o.id === orderId);
         
         if(!order) return;
 
-        // 1. Fill Order Info
         const fullName = order.customerName || `${order.firstName || ''} ${order.lastName || ''}`.trim() || "Unknown";
         document.getElementById('modal-customer-name').innerText = fullName;
         document.getElementById('modal-customer-addr').innerText = order.address || "No address";
         document.getElementById('modal-order-price').innerText = `₱${order.totalPrice || order.price || 0}`;
 
-        // 2. AI Recommendation Logic (Simulated)
-        // Find the "best" rider (e.g., fewest deliveries or active status)
         let recommendedRider = null;
-        let lowestDeliveries = Infinity;
 
-        // Populate deliveries logic if missing
         const ridersWithStats = allRiders.map(r => {
             return {
                 ...r,
@@ -439,7 +425,6 @@ export function initializeDispatch() {
             };
         });
 
-        // Sort by deliveries (ascending) to find the one with least workload
         ridersWithStats.sort((a, b) => a.deliveriesCompleted - b.deliveriesCompleted);
         
         if(ridersWithStats.length > 0) {
@@ -450,7 +435,6 @@ export function initializeDispatch() {
              document.getElementById('ai-rec-text').innerHTML = "No riders available for recommendation.";
         }
 
-        // 3. Generate Rider List inside Modal
         modalFleetList.innerHTML = '';
         
         if(ridersWithStats.length === 0) {
@@ -460,18 +444,15 @@ export function initializeDispatch() {
                 const initial = rider.name ? rider.name.charAt(0).toUpperCase() : "?";
                 const isBusy = rider.status !== "Active" && rider.status !== "Available";
                 
-                // If this is the recommended rider, mark as AI PICK
                 const isAiPick = recommendedRider && rider.riderId === recommendedRider.riderId;
                 
                 const statusText = isBusy ? "BUSY" : "AVAILABLE"; 
                 const tagClass = isBusy ? "tag-busy" : "tag-avail";
                 
-                // If it's the AI pick, add the green badge to the name
                 const aiBadgeHTML = isAiPick ? `<span class="ai-pick-badge">AI PICK</span>` : '';
 
                 const riderItem = document.createElement('div');
                 riderItem.className = 'rider-select-item';
-                // Add highlight border if AI pick
                 if(isAiPick) riderItem.style.borderColor = "#10b981";
 
                 riderItem.onclick = () => window.confirmAssignment(rider.riderId || rider.id, rider.name);
@@ -487,14 +468,9 @@ export function initializeDispatch() {
                 modalFleetList.appendChild(riderItem);
             });
         }
-
-        // 4. Show Modal
         modal.classList.add('active');
     };
 
-    // --- 2. RENDER MAIN DASHBOARD ---
-
-    // Create Pagination Container
     let paginationContainer = document.getElementById('dispatch-pagination');
     if (!paginationContainer && ordersContainer) {
         paginationContainer = document.createElement('div');
@@ -573,9 +549,6 @@ export function initializeDispatch() {
         paginationContainer.appendChild(createBtn('»', () => { if(currentPage<totalPages){currentPage++; renderDispatch();} }));
     }
 
-    // --- 3. FETCH DATA ---
-
-    // Fetch Orders
     const qOrders = query(collection(db, "orders"));
     onSnapshot(qOrders, (snapshot) => {
         allDispatchOrders = [];
@@ -590,17 +563,15 @@ export function initializeDispatch() {
         renderDispatch();
     });
 
-    // Fetch Riders (Saved to variable for Modal use)
     const qRiders = query(collection(db, "riders"));
     onSnapshot(qRiders, (snapshot) => {
-        allRiders = []; // Update global list
+        allRiders = []; 
         let html = '';
         
         snapshot.forEach((docSnap) => {
             const rider = { id: docSnap.id, ...docSnap.data() };
             allRiders.push(rider);
 
-            // Render Small Fleet Cards (Bottom right section)
             const initial = rider.name ? rider.name.charAt(0).toUpperCase() : "?";
             const isAvailable = rider.status === "Active" || rider.status === "Available";
             const statusClass = isAvailable ? "status-avail" : "status-busy";
@@ -622,16 +593,11 @@ export function initializeDispatch() {
     });
 }
 
-// ======================================================
-//  5. ROUTER & INITIALIZATION
-// ======================================================
 document.addEventListener('DOMContentLoaded', () => {
-    // Sidebar Toggle
     const hb = document.getElementById("hamburger-btn");
     const sb = document.getElementById("sidebar");
     if(hb && sb) hb.onclick = () => sb.classList.toggle("active");
 
-    // Page Detection
     const path = window.location.pathname;
     const page = path.split('/').pop();
 

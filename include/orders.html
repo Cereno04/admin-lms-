@@ -43,7 +43,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="./dispatch.html" class="nav-link">
-                        <span class="material-icons-sharp">send</span> <!-- Added Icon -->
+                        <span class="material-icons-sharp">send</span>
                         <span>Dispatch</span>
                     </a>
                 </li>
@@ -113,7 +113,6 @@
                 <!-- Pagination -->
                 <div class="pagination-container">
                     <span class="entries-text" id="entries-info">Showing 0 entries</span>
-                    <!-- ID added here for JS to target -->
                     <div class="pagination-buttons" id="pagination-buttons">
                         <!-- JS will inject buttons here -->
                     </div>
@@ -140,18 +139,16 @@
                                 <div class="arrow"></div>
                             </div>
                             <div class="custom-options">
-                                <!-- FIX: data-value must match option values exactly -->
                                 <span class="custom-option" data-value="Pending">Pending</span>
                                 <span class="custom-option" data-value="Processing">Processing</span>
-                                <span class="custom-option" data-value="Completed">Completed</span>
+                                <span class="custom-option" data-value="Pickup">Ready for Pickup</span>
                             </div>
                         </div>
                         <!-- Hidden Native Select for Logic Compatibility -->
                         <select id="modalStatusSelect" style="display: none;">
-                            <!-- FIX: Values here must match data-value above -->
                             <option value="Pending">Pending</option>
                             <option value="Processing">Processing</option>
-                            <option value="Completed">Completed</option>
+                            <option value="Pickup">Pickup</option>
                         </select>
                     </div>
                 </div>
