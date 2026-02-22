@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OceanWash - Dispatch Center</title>
+    <!-- Assuming style.css contains basic dashboard layout (sidebar/main grid) -->
     <link rel="stylesheet" href="../css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
     <link rel="icon" type="image/png" href="../assets/wave.png">
 
     <style>
-        /* --- DISPATCH PAGE SPECIFIC STYLES --- */
+        /* --- DISPATCH PAGE SPECIFIC STYLES (Your Original Styles) --- */
         
         /* Top Stats Area */
         .dispatch-header-content {
@@ -131,6 +132,109 @@
         .status-indicator { width: 8px; height: 8px; border-radius: 50%; }
         .bg-green { background: #10b981; }
         .bg-orange { background: #f97316; }
+
+        /* =================================================================
+           NEW RESPONSIVE STYLES
+           ================================================================= */
+
+        /* Hamburger Menu Button (Hidden on Desktop) */
+        #hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-right: 1rem;
+            color: #334155;
+        }
+
+        /* --- Tablet & Smaller Laptops (Max Width 1024px) --- */
+        @media screen and (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr; /* Removes sidebar column space */
+                display: block; /* Fallback if not using Grid */
+            }
+
+            .sidebar {
+                position: fixed;
+                left: -100%; /* Hide sidebar off-screen */
+                top: 0;
+                height: 100vh;
+                width: 250px;
+                background: white;
+                z-index: 999;
+                transition: left 0.3s ease;
+                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+            }
+
+            /* This class is toggled by your existing script.js */
+            .sidebar.active {
+                left: 0; 
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding: 1.5rem;
+            }
+
+            /* Show Hamburger */
+            #hamburger-btn {
+                display: inline-block;
+            }
+
+            /* Align Header content for the toggle */
+            .header-text h1 {
+                display: flex;
+                align-items: center;
+            }
+        }
+
+        /* --- Mobile Devices (Max Width 768px) --- */
+        @media screen and (max-width: 768px) {
+            .dispatch-header-content {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 1.5rem;
+            }
+
+            .header-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .stat-badge {
+                flex: 1; /* Stats take full width */
+                min-width: auto;
+            }
+
+            .pipeline-grid {
+                /* Force 1 column on mobile or keep auto-fill with smaller min-width */
+                grid-template-columns: 1fr; 
+            }
+            
+            .fleet-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Modal Responsive Fixes */
+            .assign-modal-card {
+                width: 90%; /* Instead of fixed width */
+                max-width: 400px;
+                margin: 20px auto;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .order-info-box {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .info-header {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -139,6 +243,12 @@
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../assets/logo.png" alt="OceanWash Logo" class="logo-img">
+                <!-- Optional close button for mobile sidebar -->
+                <span class="material-icons-sharp" onclick="document.getElementById('sidebar').classList.remove('active')" style="display:none; cursor:pointer; margin-left:auto;" id="mobile-close-sidebar">close</span>
+                <script>
+                    // Small inline script to show close button only on mobile
+                    if(window.innerWidth <= 1024) document.getElementById('mobile-close-sidebar').style.display = 'block';
+                </script>
             </div>
             <ul class="sidebar-nav">
                 <li class="nav-item">
@@ -187,7 +297,13 @@
             <!-- Custom Dispatch Header -->
             <div class="dispatch-header-content">
                 <div class="header-text">
-                    <h1>Dispatch Command Center</h1>
+                    <h1>
+                        <!-- HAMBURGER BUTTON (For Mobile/Tablet) -->
+                        <button id="hamburger-btn">
+                            <span class="material-icons-sharp">menu</span>
+                        </button>
+                        Dispatch Command Center
+                    </h1>
                     <p><span class="status-dot-green"></span> Operational Monitoring</p>
                 </div>
                 <div class="header-stats">
