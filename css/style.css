@@ -894,9 +894,18 @@ body {
         display: none;
     }
 
+    /* --- ADDED: Widen the content area on mobile --- */
+    .main-content {
+        padding: 10px !important; /* Reduced from default */
+    }
+
     /* 2. CARD TABLE TRANSFORMATION (NO SCROLLING) */
     .table-responsive {
         overflow: visible;
+        /* --- ADDED: Remove borders/padding to maximize width --- */
+        border: none;
+        padding: 0;
+        width: 100%;
     }
 
     .custom-table thead {
@@ -918,6 +927,11 @@ body {
         border: 1px solid #e9ecef;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         padding-bottom: 0.5rem;
+        
+        /* --- ADDED: Ensure full width --- */
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
     }
 
     .custom-table td {
@@ -1022,6 +1036,13 @@ body {
 
     .search-box input {
         width: 100%;
+    }
+    
+    /* --- ADDED: Fix pagination width --- */
+    .pagination-container {
+        width: 100%;
+        border-radius: 8px;
+        margin-top: 10px;
     }
 }
 
