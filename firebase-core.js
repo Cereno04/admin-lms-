@@ -29,11 +29,11 @@ export function handleAuthRouting() {
         const page = path.split("/").pop();
         
         // If not logged in and not on login page, kick them out
-        if (!user && page !== "login.html") {
-            window.location.href = "../include/login.html";
+        if (!user && page !== "index.html") {
+            window.location.href = "../include/index.html";
         } 
         // If logged in and on login page, send to dashboard
-        else if (user && page === "login.html") {
+        else if (user && page === "index.html") {
             window.location.href = "../include/dashboard.html";
         }
     });
@@ -46,7 +46,7 @@ export function handleLogout() {
             e.preventDefault();
             signOut(auth).then(() => {
                 alert("Logged out successfully");
-                window.location.href = "../include/login.html";
+                window.location.href = "../include/index.html";
             });
         });
     }

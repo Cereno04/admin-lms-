@@ -35,7 +35,6 @@ export function initializeOrders() {
     
     // --- UPDATE STATUS FUNCTION (SYNCED) ---
     window.updateOrderStatus = async (orderId, newStatus) => {
-        // Confirmation dialog
         if (!confirm(`Are you sure you want to update this order to "${newStatus}"?`)) {
             return; 
         }
@@ -43,7 +42,6 @@ export function initializeOrders() {
         try {
             console.log(`Starting update for Order ID: ${orderId} to Status: ${newStatus}`);
 
-            // 1. Reference the Global Order
             const globalOrderRef = doc(db, "orders", orderId);
             const globalSnap = await getDoc(globalOrderRef);
 
@@ -53,28 +51,20 @@ export function initializeOrders() {
             }
 
             const orderData = globalSnap.data();
-            const userId = orderData.userId; // This identifies which user owns the order
+            const userId = orderData.userId; 
 
-            // 2. Update the Global Order Collection
             await updateDoc(globalOrderRef, { 
                 status: newStatus,
                 updatedAt: new Date()
             });
 
-            // 3. Sync to User's Personal Collection (Ensures App List updates)
             if (userId) {
                 const userOrderRef = doc(db, "users", userId, "bookings", orderId);
-                
-                // Using setDoc with merge: true acts like update but creates if missing (safety net)
                 await setDoc(userOrderRef, { 
                     status: newStatus,
                     updatedAt: new Date()
                 }, { merge: true });
-
-                console.log(`Successfully synced status to User ID: ${userId}`);
-            } else {
-                console.warn("Warning: This order has no userId attached.");
-            }
+            } 
             
             alert(`Status successfully updated to: ${newStatus}`);
 
@@ -94,10 +84,8 @@ export function initializeOrders() {
         }
     };
 
-    // --- RENDER TABLE ---
     if (!tableBody) return;
 
-    // Listen to real-time updates
     const ordersQuery = query(collection(db, "orders"));
 
     onSnapshot(ordersQuery, (snapshot) => {
@@ -108,7 +96,6 @@ export function initializeOrders() {
             return;
         }
 
-        // Sort by timestamp descending (Newest first)
         const docs = [];
         snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
         docs.sort((a, b) => {
@@ -119,34 +106,28 @@ export function initializeOrders() {
 
         docs.forEach((order, index) => {
             const orderId = order.id;
-            // Handle name variations
             const fullName = order.customerName || `${order.firstName || ''} ${order.lastName || ''}`.trim() || "Unknown";
             const displayPrice = order.totalPrice || order.price || 0;
             
-            // Format Date
             let dateString = "N/A";
             if (order.timestamp && typeof order.timestamp.toDate === 'function') {
                 dateString = order.timestamp.toDate().toLocaleDateString();
             }
 
-            // Normalize Status
             const status = order.status || "Pending"; 
 
-            // Select Dropdown Logic
             const isPending = status === "Pending" ? "selected" : "";
             const isProcessing = (status === "Processing") ? "selected" : "";
             const isPickup = (status === "Ready for Pickup" || status === "Pickup") ? "selected" : "";
             const isDelivery = (status === "Out for Delivery") ? "selected" : "";
             const isCompleted = (status === "Completed") ? "selected" : "";
 
-            // Status Badge Color Logic
             let statusColor = "#f97316"; 
             if (status === "Processing") statusColor = "#3b82f6";
             if (status === "Ready for Pickup" || status === "Pickup") statusColor = "#a855f7"; 
             if (status === "Out for Delivery") statusColor = "#eab308";
             if (status === "Completed") statusColor = "#22c55e"; 
 
-            // Handle Items Display
             let itemsDisplay = order.selectedItems || "No items";
             if (Array.isArray(itemsDisplay)) {
                 itemsDisplay = itemsDisplay.join(", ");
@@ -184,7 +165,7 @@ export function initializeOrders() {
 }
 
 // ======================================================
-//  RIDER MANAGEMENT
+//  RIDER MANAGEMENT (UPDATED to include Vehicle Info)
 // ======================================================
 export function initializeSchedule() {
     const tableBody = document.getElementById('rider-table-body');
@@ -237,6 +218,16 @@ export function initializeSchedule() {
             const riderId = riderIdInput.value.trim();
             const riderRef = doc(db, "riders", riderId);
 
+            // FETCH VALUES safely (Assuming inputs exist in HTML, otherwise defaults to empty)
+            const nameVal = document.getElementById('rider-name') ? document.getElementById('rider-name').value : "";
+            const emailVal = document.getElementById('rider-email') ? document.getElementById('rider-email').value : "";
+            const phoneVal = document.getElementById('rider-phone') ? document.getElementById('rider-phone').value : "";
+            const passVal = document.getElementById('rider-password') ? document.getElementById('rider-password').value : "";
+            
+            // NEW FIELDS FOR APP INFO
+            const bikeVal = document.getElementById('rider-motorcycle') ? document.getElementById('rider-motorcycle').value : "Standard Bike";
+            const plateVal = document.getElementById('rider-plate') ? document.getElementById('rider-plate').value : "---";
+
             try {
                 const existing = await getDoc(riderRef);
                 if (existing.exists()) {
@@ -245,10 +236,12 @@ export function initializeSchedule() {
                 }
                 await setDoc(riderRef, {
                     riderId,
-                    name: document.getElementById('rider-name').value,
-                    email: document.getElementById('rider-email').value,
-                    phone: document.getElementById('rider-phone').value,
-                    password: document.getElementById('rider-password').value,
+                    name: nameVal,
+                    email: emailVal,
+                    phone: phoneVal,
+                    password: passVal,
+                    motorcycle: bikeVal, // Saved to DB
+                    plateNumber: plateVal, // Saved to DB
                     status: "Active",
                     role: "rider",
                     createdAt: new Date()
@@ -270,7 +263,7 @@ export function initializeSchedule() {
                 <tr>
                     <td>${rider.riderId || docSnap.id}</td>
                     <td>${rider.name}</td>
-                    <td>${rider.email}</td>
+                    <td>${rider.motorcycle || 'N/A'} <br> <small>${rider.plateNumber || ''}</small></td>
                     <td>${rider.phone}</td>
                     <td><span class="status-badge completed">Active</span></td>
                     <td>
@@ -290,19 +283,33 @@ export function initializeSchedule() {
 }
 
 // ======================================================
-//  DISPATCH CENTER
+//  DISPATCH CENTER (UPDATED to Fetch & Save Rider Info)
 // ======================================================
 export function initializeDispatch() {
     const ordersContainer = document.getElementById('dispatch-orders-container');
-    const fleetContainer = document.getElementById('dispatch-fleet-container');
-
-    // 1. Assign Rider Logic
+    
+    // UPDATED: Fetches Rider Details from DB before assigning
     window.assignRider = async (orderId) => {
         const riderId = prompt("Enter Rider ID to assign (e.g., RDR-0001):");
         if (!riderId) return;
 
         try {
-            // Update Global Order
+            // 1. Fetch Rider Details First
+            const riderRef = doc(db, "riders", riderId);
+            const riderSnap = await getDoc(riderRef);
+
+            if (!riderSnap.exists()) {
+                alert("Error: Rider ID not found! Please check the ID.");
+                return;
+            }
+
+            const riderData = riderSnap.data();
+            const riderName = riderData.name || "Unknown Rider";
+            const riderPhone = riderData.phone || "No Phone";
+            const riderBike = riderData.motorcycle || "Standard Bike";
+            const riderPlate = riderData.plateNumber || "---";
+
+            // 2. Update Global Order
             const orderRef = doc(db, "orders", orderId);
             const orderSnap = await getDoc(orderRef);
             
@@ -311,28 +318,27 @@ export function initializeDispatch() {
                 return;
             }
 
-            const riderName = "Assigned Rider"; // Ideally fetch real name from riders collection
-
-            // Update Global Order
-            await updateDoc(orderRef, {
+            const updateData = {
                 status: "Ready for Pickup",
                 assignedRiderId: riderId,
                 assignedRiderName: riderName,
+                assignedRiderPhone: riderPhone, // Saving phone for App
+                assignedRiderBike: riderBike,   // Saving bike for App
+                assignedRiderPlate: riderPlate, // Saving plate for App
                 updatedAt: new Date()
-            });
+            };
 
-            // Update User Booking (Sync)
+            await updateDoc(orderRef, updateData);
+
+            // 3. Sync User Booking
             const userId = orderSnap.data().userId;
             if(userId) {
                 const userRef = doc(db, "users", userId, "bookings", orderId);
-                await setDoc(userRef, {
-                    status: "Ready for Pickup",
-                    assignedRiderId: riderId,
-                    assignedRiderName: riderName,
-                    updatedAt: new Date()
-                }, { merge: true });
+                await setDoc(userRef, updateData, { merge: true });
             }
-            alert("Rider Assigned & Status Updated!");
+
+            alert(`Assigned ${riderName} (${riderBike}) to the order!`);
+
         } catch(e) {
             console.error(e);
             alert("Error assigning rider: " + e.message);
@@ -352,7 +358,6 @@ export function initializeDispatch() {
                 const order = docSnap.data();
                 const orderId = docSnap.id;
                 
-                // Only show active orders in dispatch
                 if(order.status === "Completed") return;
 
                 const fullName = order.customerName || `${order.firstName || ''} ${order.lastName || ''}`.trim() || "Unknown";
@@ -362,6 +367,15 @@ export function initializeDispatch() {
                 if (order.status === "Processing") statusColor = "#3b82f6";
                 if (order.status === "Ready for Pickup") statusColor = "#a855f7";
                 if (order.status === "Out for Delivery") statusColor = "#eab308";
+
+                // Display assigned rider info in card if exists
+                let assignedInfo = "";
+                if (order.assignedRiderName) {
+                    assignedInfo = `<div style="margin-top:10px; font-size:12px; color:#444; background:#f0f9ff; padding:5px; border-radius:4px;">
+                        <strong>Rider:</strong> ${order.assignedRiderName} <br>
+                        <strong>Plate:</strong> ${order.assignedRiderPlate || '--'}
+                    </div>`;
+                }
 
                 html += `
                 <div class="order-card" style="border-left: 5px solid ${statusColor}; background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
@@ -376,14 +390,14 @@ export function initializeDispatch() {
                         ${order.status || "Pending"}
                     </div>
                     
-                    <button onclick="window.assignRider('${orderId}')" style="width:100%; padding:10px; background:#0077B6; color:white; border:none; border-radius:6px; cursor:pointer;">
-                        Assign Rider
+                    ${assignedInfo}
+
+                    <button onclick="window.assignRider('${orderId}')" style="width:100%; padding:10px; margin-top:10px; background:#0077B6; color:white; border:none; border-radius:6px; cursor:pointer;">
+                        ${order.assignedRiderId ? "Re-Assign Rider" : "Assign Rider"}
                     </button>
                 </div>`;
             });
             ordersContainer.innerHTML = html;
         });
     }
-
-    
 }
