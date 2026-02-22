@@ -204,18 +204,31 @@
 
     /* --- MOBILE RESPONSE --- */
     @media (max-width: 900px) {
+        /* ADDED: This pushes the content to the top and allows the body to grow */
+        body {
+            align-items: flex-start;
+            height: auto;
+            min-height: 100vh;
+        }
+
         .main-card {
             flex-direction: column;
             width: 100%;
-            max-width: 400px; 
+            max-width: 100%; /* Changed to fill the screen width */
             height: auto;     
-            max-height: 95vh; 
+            min-height: 100vh; /* Changed to fill the screen height */
+            max-height: none; /* Removed the height limit */
+            border-radius: 0; /* Removed corners so it sits flush against the edges */
+            box-shadow: none; /* Optional: Removes shadow since it fills the screen */
             overflow-y: auto; 
             scrollbar-width: none; 
             -ms-overflow-style: none;
         }
+
         .main-card::-webkit-scrollbar { display: none; }
+        
         .brand-section { padding: 2rem 1rem 1.5rem 1rem; flex: 0 0 auto; }
+        
         .image-container {
             width: 180px; 
             height: 200px; 
@@ -223,14 +236,18 @@
             border-top-right-radius: 90px;
             margin-bottom: 1rem;
         }
+        
         .image-container i { font-size: 50px !important; margin-bottom: 25px !important; }
+        
         .brand-section h1 {
             font-size: 1.1rem;
             margin-top: -35px;
             margin-bottom: 15px;
             padding: 8px 15px;
         }
+        
         .brand-section p { font-size: 0.75rem; max-width: 90%; }
+        
         .login-section { padding: 1.5rem 2rem; flex: 0 0 auto; }
         
         /* MODIFIED: Move Admin Text below P tag on mobile */
@@ -242,7 +259,6 @@
             display: block;
         }
     }
-
 
     .modal-overlay {
         position: fixed;
