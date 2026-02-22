@@ -73,7 +73,7 @@ if(loginForm) {
                 
                 // Small delay so user can see the success message before redirect
                 setTimeout(() => {
-                    window.location.href = "dashboard.html"; 
+                    window.location.href = "/include/dashboard.html"; 
                 }, 1500);
             })
             .catch((error) => {
