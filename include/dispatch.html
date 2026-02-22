@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,7 +13,7 @@
 
     <style>
         /* --- DISPATCH PAGE SPECIFIC STYLES (Your Original Styles) --- */
-        
+
         /* Top Stats Area */
         .dispatch-header-content {
             display: flex;
@@ -20,22 +21,57 @@
             align-items: flex-start;
             margin-bottom: 2rem;
         }
-        
-        .header-text h1 { font-size: 1.8rem; color: #1e293b; margin-bottom: 5px; }
-        .header-text p { color: #64748b; font-size: 0.9rem; display: flex; align-items: center; gap: 5px; }
-        .status-dot-green { width: 8px; height: 8px; background: #10b981; border-radius: 50%; display: inline-block; }
 
-        .header-stats { display: flex; gap: 1rem; }
+        .header-text h1 {
+            font-size: 1.8rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            color: #64748b;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-dot-green {
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
         .stat-badge {
             background: #fff;
             padding: 10px 20px;
             border-radius: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
             text-align: center;
             min-width: 120px;
         }
-        .stat-badge small { display: block; color: #94a3b8; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
-        .stat-badge strong { font-size: 1.4rem; color: #0077B6; line-height: 1.2; }
+
+        .stat-badge small {
+            display: block;
+            color: #94a3b8;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .stat-badge strong {
+            font-size: 1.4rem;
+            color: #0077B6;
+            line-height: 1.2;
+        }
 
         /* Section Titles */
         .section-title {
@@ -47,12 +83,24 @@
             font-weight: 600;
             color: #334155;
         }
-        .section-icon { 
-            padding: 5px; border-radius: 50%; 
-            display: flex; align-items: center; justify-content: center; 
+
+        .section-icon {
+            padding: 5px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .icon-orange { background: #fff7ed; color: #f97316; }
-        .icon-green { background: #ecfdf5; color: #10b981; }
+
+        .icon-orange {
+            background: #fff7ed;
+            color: #f97316;
+        }
+
+        .icon-green {
+            background: #ecfdf5;
+            color: #10b981;
+        }
 
         /* Order Cards Grid */
         .pipeline-grid {
@@ -65,24 +113,61 @@
             background: #fff;
             border-radius: 12px;
             padding: 1.5rem;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
             border: 1px solid #f1f5f9;
             transition: transform 0.2s;
             position: relative;
         }
-        .order-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
 
-        .card-top { display: flex; justify-content: space-between; margin-bottom: 10px; }
-        .order-id { font-size: 0.75rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
-        .order-price { font-size: 1.2rem; font-weight: 800; color: #0077B6; }
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.05);
+        }
 
-        .card-body h3 { font-size: 1.1rem; color: #1e293b; margin-bottom: 5px; }
-        .card-address { display: flex; align-items: flex-start; gap: 5px; color: #64748b; font-size: 0.85rem; line-height: 1.4; margin-bottom: 1.5rem; }
-        .card-address span { font-size: 16px; margin-top: 2px; }
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .order-id {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .order-price {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: #0077B6;
+        }
+
+        .card-body h3 {
+            font-size: 1.1rem;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .card-address {
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
+            color: #64748b;
+            font-size: 0.85rem;
+            line-height: 1.4;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-address span {
+            font-size: 16px;
+            margin-top: 2px;
+        }
 
         .assign-btn {
             width: 100%;
-            background: #0f172a; /* Dark Navy */
+            background: #0f172a;
+            /* Dark Navy */
             color: white;
             border: none;
             padding: 12px;
@@ -95,7 +180,10 @@
             gap: 8px;
             transition: background 0.2s;
         }
-        .assign-btn:hover { background: #334155; }
+
+        .assign-btn:hover {
+            background: #334155;
+        }
 
         /* Fleet Grid */
         .fleet-grid {
@@ -113,25 +201,65 @@
             gap: 12px;
             border: 1px solid #f1f5f9;
         }
-        
+
         .rider-avatar {
-            width: 40px; height: 40px;
+            width: 40px;
+            height: 40px;
             border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; color: #475569;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #475569;
         }
-        .avatar-green { background: #d1fae5; color: #065f46; }
-        .avatar-orange { background: #ffedd5; color: #9a3412; }
 
-        .rider-info { flex: 1; }
-        .rider-info h4 { font-size: 0.9rem; color: #334155; margin-bottom: 2px; }
-        .rider-status { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
-        .status-avail { color: #10b981; }
-        .status-busy { color: #f97316; }
+        .avatar-green {
+            background: #d1fae5;
+            color: #065f46;
+        }
 
-        .status-indicator { width: 8px; height: 8px; border-radius: 50%; }
-        .bg-green { background: #10b981; }
-        .bg-orange { background: #f97316; }
+        .avatar-orange {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .rider-info {
+            flex: 1;
+        }
+
+        .rider-info h4 {
+            font-size: 0.9rem;
+            color: #334155;
+            margin-bottom: 2px;
+        }
+
+        .rider-status {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .status-avail {
+            color: #10b981;
+        }
+
+        .status-busy {
+            color: #f97316;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .bg-green {
+            background: #10b981;
+        }
+
+        .bg-orange {
+            background: #f97316;
+        }
 
         /* =================================================================
            NEW RESPONSIVE STYLES
@@ -145,30 +273,34 @@
             cursor: pointer;
             margin-right: 1rem;
             color: #334155;
+            font-size: 32px !important; /* Ensure size consistency */
         }
 
         /* --- Tablet & Smaller Laptops (Max Width 1024px) --- */
         @media screen and (max-width: 1024px) {
             .container {
-                grid-template-columns: 1fr; /* Removes sidebar column space */
-                display: block; /* Fallback if not using Grid */
+                grid-template-columns: 1fr;
+                /* Removes sidebar column space */
+                display: block;
+                /* Fallback if not using Grid */
             }
 
             .sidebar {
                 position: fixed;
-                left: -100%; /* Hide sidebar off-screen */
+                left: -100%;
+                /* Hide sidebar off-screen */
                 top: 0;
                 height: 100vh;
                 width: 250px;
                 background: white;
                 z-index: 999;
                 transition: left 0.3s ease;
-                box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+                box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
             }
 
             /* This class is toggled by your existing script.js */
             .sidebar.active {
-                left: 0; 
+                left: 0;
             }
 
             .main-content {
@@ -182,10 +314,13 @@
                 display: inline-block;
             }
 
-            /* Align Header content for the toggle */
-            .header-text h1 {
-                display: flex;
-                align-items: center;
+            .sidebar-burger-btn {
+                display: block !important;
+            }
+
+            /* Hide original burger when sidebar is active */
+            .sidebar.active ~ .main-content #hamburger-btn {
+                display: none !important;
             }
         }
 
@@ -203,22 +338,24 @@
             }
 
             .stat-badge {
-                flex: 1; /* Stats take full width */
+                flex: 1;
+                /* Stats take full width */
                 min-width: auto;
             }
 
             .pipeline-grid {
                 /* Force 1 column on mobile or keep auto-fill with smaller min-width */
-                grid-template-columns: 1fr; 
+                grid-template-columns: 1fr;
             }
-            
+
             .fleet-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             /* Modal Responsive Fixes */
             .assign-modal-card {
-                width: 90%; /* Instead of fixed width */
+                width: 90%;
+                /* Instead of fixed width */
                 max-width: 400px;
                 margin: 20px auto;
                 max-height: 90vh;
@@ -229,7 +366,7 @@
                 flex-direction: column;
                 align-items: flex-start;
             }
-            
+
             .info-header {
                 width: 100%;
                 margin-bottom: 10px;
@@ -237,18 +374,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <img src="../assets/logo.png" alt="OceanWash Logo" class="logo-img">
-                <!-- Optional close button for mobile sidebar -->
-                <span class="material-icons-sharp" onclick="document.getElementById('sidebar').classList.remove('active')" style="display:none; cursor:pointer; margin-left:auto;" id="mobile-close-sidebar">close</span>
-                <script>
-                    // Small inline script to show close button only on mobile
-                    if(window.innerWidth <= 1024) document.getElementById('mobile-close-sidebar').style.display = 'block';
-                </script>
+                <span class="material-icons-sharp sidebar-burger-btn" onclick="document.getElementById('sidebar').classList.remove('active')">menu</span>
             </div>
             <ul class="sidebar-nav">
                 <li class="nav-item">
@@ -293,17 +426,21 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            
+
+            <!-- Standard Header with Admin Profile -->
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Dispatch</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin">
+                    <span>Admin</span>
+                </div>
+            </header>
+
             <!-- Custom Dispatch Header -->
             <div class="dispatch-header-content">
                 <div class="header-text">
-                    <h1>
-                        <!-- HAMBURGER BUTTON (For Mobile/Tablet) -->
-                        <button id="hamburger-btn">
-                            <span class="material-icons-sharp">menu</span>
-                        </button>
-                        Dispatch Command Center
-                    </h1>
+                    <h1>Dispatch Command Center</h1>
                     <p><span class="status-dot-green"></span> Operational Monitoring</p>
                 </div>
                 <div class="header-stats">
@@ -341,7 +478,7 @@
 
             <!-- Dynamic Fleet Container -->
             <div class="fleet-grid" id="dispatch-fleet-container">
-                 <p>Loading fleet...</p>
+                <p>Loading fleet...</p>
             </div>
         </main>
     </div>
@@ -353,7 +490,7 @@
                 <h2>Assign Rider</h2>
                 <span class="close-modal" id="closeAssignModal">&times;</span>
             </div>
-    
+
             <!-- 1. ORDER INFO (Blue Box) -->
             <div class="order-info-box">
                 <div class="info-header">
@@ -374,21 +511,22 @@
                     <p id="ai-rec-text">Analyzing fleet availability...</p>
                 </div>
             </div>
-    
+
             <span class="fleet-label">AVAILABLE FLEET</span>
-    
+
             <!-- 3. FLEET LIST (Hidden Scrollbar) -->
             <div class="modal-fleet-list" id="modal-fleet-list">
                 <!-- JavaScript will inject riders here -->
             </div>
-    
+
             <div class="modal-footer">
                 <button class="cancel-link" id="cancelAssignBtn">CANCEL</button>
             </div>
         </div>
     </div>
     <!-- END: ASSIGN RIDER MODAL -->
-    
+
     <script type="module" src="../script.js"></script>
 </body>
+
 </html>

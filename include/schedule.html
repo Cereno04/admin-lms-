@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,61 +9,243 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
     <style>
-        :root { --primary: #1a73e8; --bg: #f8fafd; }
-        body { font-family: 'Poppins', sans-serif; background: var(--bg); margin: 0; color: #333; }
+        :root {
+            --primary: #1a73e8;
+            --bg: #f8fafd;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            margin: 0;
+            color: #333;
+        }
 
         /* RESPONSIVE TABLE */
-        .table-container { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .custom-table { width: 100%; border-collapse: collapse; }
-        .custom-table th { background: #f1f4f9; padding: 15px; text-align: left; font-size: 13px; color: #555; }
-        .custom-table td { padding: 15px; border-bottom: 1px solid #eee; font-size: 14px; }
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .custom-table th {
+            background: #f1f4f9;
+            padding: 15px;
+            text-align: left;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .custom-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
 
         @media (max-width: 1024px) {
-            .custom-table thead { display: none; }
-            .custom-table tr { display: block; border: 1px solid #eee; margin-bottom: 15px; border-radius: 10px; background: white; padding: 10px; }
-            .custom-table td { display: flex; justify-content: space-between; border: none; text-align: right; padding: 8px 10px; }
-            .custom-table td::before { content: attr(data-label); font-weight: 700; color: #777; float: left; }
+            .custom-table thead {
+                display: none;
+            }
+
+            .custom-table tr {
+                display: block;
+                border: 1px solid #eee;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                background: white;
+                padding: 10px;
+            }
+
+            .custom-table td {
+                display: flex;
+                justify-content: space-between;
+                border: none;
+                text-align: right;
+                padding: 8px 10px;
+            }
+
+            .custom-table td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: #777;
+                float: left;
+            }
         }
 
         /* MODAL ALERTS (FIXED DESIGN) */
         .custom-alert-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; z-index: 10000; padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            padding: 20px;
         }
-        .custom-alert-overlay.active { display: flex; }
-        
-        .custom-alert-card { background: white; width: 100%; max-width: 320px; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
-        .alert-header { background: #f1f1f1; padding: 10px 15px; font-size: 11px; color: #888; border-bottom: 1px solid #ddd; }
-        .alert-body { padding: 25px; text-align: center; font-size: 14px; }
-        .alert-footer { padding: 10px; text-align: right; }
-        #alert-ok-btn { background: var(--primary); color: white; border: none; padding: 6px 20px; border-radius: 4px; cursor: pointer; }
 
-        .confirm-card { background: white; width: 100%; max-width: 360px; padding: 30px; border-radius: 15px; text-align: center; }
-        .confirm-icon { font-size: 50px; color: #f8bb86; margin-bottom: 15px; border: 3px solid #f8bb86; border-radius: 50%; width: 70px; height: 70px; line-height: 70px; margin: 0 auto 15px; display: flex; align-items: center; justify-content: center; }
-        .confirm-footer { display: flex; gap: 10px; margin-top: 25px; }
-        .confirm-btn-yes { background: var(--primary); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; flex: 1; font-weight: 600; }
-        .confirm-btn-cancel { background: #eee; border: none; padding: 10px; border-radius: 5px; cursor: pointer; flex: 1; }
+        .custom-alert-overlay.active {
+            display: flex;
+        }
+
+        .custom-alert-card {
+            background: white;
+            width: 100%;
+            max-width: 320px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .alert-header {
+            background: #f1f1f1;
+            padding: 10px 15px;
+            font-size: 11px;
+            color: #888;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .alert-body {
+            padding: 25px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .alert-footer {
+            padding: 10px;
+            text-align: right;
+        }
+
+        #alert-ok-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 6px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .confirm-card {
+            background: white;
+            width: 100%;
+            max-width: 360px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .confirm-icon {
+            font-size: 50px;
+            color: #f8bb86;
+            margin-bottom: 15px;
+            border: 3px solid #f8bb86;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .confirm-footer {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .confirm-btn-yes {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+            font-weight: 600;
+        }
+
+        .confirm-btn-cancel {
+            background: #eee;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+        }
 
         /* MODAL FORM GRID */
-        .modal-body-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        @media (max-width: 600px) { .modal-body-grid { grid-template-columns: 1fr; } }
-        .field { display: flex; flex-direction: column; }
-        .field label { font-size: 11px; font-weight: 700; margin-bottom: 4px; color: #777; text-transform: uppercase; }
-        .field input { padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 14px; }
-        .field input[readonly] { background: #f0f7ff; border: 1px dashed var(--primary); font-weight: bold; color: var(--primary); }
+        .modal-body-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .modal-body-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #777;
+            text-transform: uppercase;
+        }
+
+        .field input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .field input[readonly] {
+            background: #f0f7ff;
+            border: 1px dashed var(--primary);
+            font-weight: bold;
+            color: var(--primary);
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header"><img src="../assets/logo.png" style="width: 140px;"></div>
+            <div class="sidebar-header">
+                <img src="../assets/logo.png" style="width: 140px;">
+                <span class="material-icons-sharp sidebar-burger-btn" onclick="document.getElementById('sidebar').classList.remove('active')">menu</span>
+            </div>
             <ul class="sidebar-nav">
-                <li class="nav-item"><a href="./dashboard.html" class="nav-link"><span class="material-icons-sharp">dashboard</span><span>Dashboard</span></a></li>
-                <li class="nav-item"><a href="./orders.html" class="nav-link"><span class="material-icons-sharp">receipt_long</span><span>Orders</span></a></li>
-                <li class="nav-item"><a href="./schedule.html" class="nav-link active"><span class="material-icons-sharp">local_shipping</span><span>Rider</span></a></li>
-                <li class="nav-item"><a href="./customers.html" class="nav-link"><span class="material-icons-sharp">people</span><span>Customers</span></a></li>
-               <li class="nav-item">
+                <li class="nav-item"><a href="./dashboard.html" class="nav-link"><span
+                            class="material-icons-sharp">dashboard</span><span>Dashboard</span></a></li>
+                <li class="nav-item"><a href="./orders.html" class="nav-link"><span
+                            class="material-icons-sharp">receipt_long</span><span>Orders</span></a></li>
+                <li class="nav-item"><a href="./schedule.html" class="nav-link active"><span
+                            class="material-icons-sharp">local_shipping</span><span>Rider</span></a></li>
+                <li class="nav-item"><a href="./customers.html" class="nav-link"><span
+                            class="material-icons-sharp">people</span><span>Customers</span></a></li>
+                <li class="nav-item">
                     <a href="./dispatch.html" class="nav-link">
                         <span class="material-icons-sharp">send</span> <!-- Added Icon -->
                         <span>Dispatch</span>
@@ -72,14 +255,22 @@
         </aside>
 
         <main class="main-content" style="padding: 20px;">
-            <header style="display: flex; align-items: center; gap: 15px; margin-bottom: 25px;">
-                <span class="material-icons-sharp" id="hamburger-btn" style="cursor: pointer; font-size: 28px;">menu</span>
-                <h1 style="margin: 0; font-size: 24px;">Rider Directory</h1>
+            
+            <!-- Standard Header with Admin Profile -->
+            <header class="main-header">
+                <span class="material-icons-sharp hamburger-btn" id="hamburger-btn">menu</span>
+                <h1>Rider Directory</h1>
+                <div class="admin-profile">
+                    <img src="../assets/user.png" alt="Admin">
+                    <span>Admin</span>
+                </div>
             </header>
 
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+            <div
+                style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                 <h3 style="margin: 0; color: #666;">Account Management</h3>
-                <button class="add-new-btn" id="open-rider-modal" style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+                <button class="add-new-btn" id="open-rider-modal"
+                    style="background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 8px;">
                     <span class="material-icons-sharp">person_add</span> Add New Rider
                 </button>
             </div>
@@ -107,9 +298,11 @@
     <!-- RIDER ACCOUNT MODAL -->
     <div id="riderModal" class="custom-modal">
         <div class="custom-modal-content" style="max-width: 600px; padding: 0; border-radius: 12px; overflow: hidden;">
-            <div style="padding: 18px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
+            <div
+                style="padding: 18px 20px; background: var(--primary); color: white; display: flex; justify-content: space-between; align-items: center;">
                 <h3 style="margin: 0; font-size: 18px;">Rider Account Setup</h3>
-                <span style="cursor: pointer; font-size: 24px;" onclick="document.getElementById('riderModal').classList.remove('active')">&times;</span>
+                <span style="cursor: pointer; font-size: 24px;"
+                    onclick="document.getElementById('riderModal').classList.remove('active')">&times;</span>
             </div>
             <form id="rider-form">
                 <div class="modal-body-grid">
@@ -143,8 +336,12 @@
                     </div>
                 </div>
                 <div style="padding: 20px; display: flex; gap: 10px; border-top: 1px solid #eee; background: #fafafa;">
-                    <button type="button" style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: white;" onclick="document.getElementById('riderModal').classList.remove('active')">Cancel</button>
-                    <button type="submit" style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Register Rider</button>
+                    <button type="button"
+                        style="flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: white;"
+                        onclick="document.getElementById('riderModal').classList.remove('active')">Cancel</button>
+                    <button type="submit"
+                        style="flex: 1; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Register
+                        Rider</button>
                 </div>
             </form>
         </div>
@@ -164,7 +361,8 @@
         <div class="confirm-card">
             <div class="confirm-icon"><span class="material-icons-sharp">priority_high</span></div>
             <h2 id="confirm-title" style="margin: 0; font-size: 20px;">Are you sure?</h2>
-            <p id="confirm-message" style="color: #666; margin-top: 10px; font-size: 14px;">Please confirm to proceed.</p>
+            <p id="confirm-message" style="color: #666; margin-top: 10px; font-size: 14px;">Please confirm to proceed.
+            </p>
             <div class="confirm-footer">
                 <button class="confirm-btn-cancel" id="confirm-cancel-btn">Cancel</button>
                 <button class="confirm-btn-yes" id="confirm-yes-btn">Yes, Confirm</button>
@@ -174,4 +372,5 @@
 
     <script type="module" src="../script.js"></script>
 </body>
+
 </html>
