@@ -979,7 +979,7 @@ body {
         background-color: #f8f9fa;
         border-radius: 0 0 8px 8px;
         padding: 12px 15px;
-        justify-content: flex-end; /* Push buttons to the right */
+        justify-content: center; /* Push buttons to the right */
         min-height: auto;
     }
 
