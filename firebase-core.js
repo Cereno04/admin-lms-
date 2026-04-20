@@ -1,39 +1,26 @@
 // firebase-core.js
 
-// 1. Import Firebase functions - VERSION 10.8.1
+// 1. Import Firebase functions - UPDATED TO 10.8.1
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-// Firestore functions - VERSION 10.8.1
-import { 
-    getFirestore, 
-    collection, 
-    query, 
-    orderBy, 
-    onSnapshot, 
-    doc, 
-    updateDoc, 
-    deleteDoc, 
-    where, 
-    limit, 
-    getDocs,
-    setDoc 
-} from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+// NEW: Import Firestore functions - UPDATED TO 10.8.1
+import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-// 2. YOUR CONFIGURATION (Keep exactly as is)
+// 2. YOUR CONFIGURATION
 const firebaseConfig = {
-  apiKey: "AIzaSyCjNlxF7tmC2TWdkNUv2oQheeKYQMi-PxY",
-  authDomain: "lms-database-d21f6.firebaseapp.com",
-  projectId: "lms-database-d21f6",
-  storageBucket: "lms-database-d21f6.firebasestorage.app",
-  messagingSenderId: "219532292912",
-  appId: "1:219532292912:web:102aca94640d5abf6d4ef5",
-  measurementId: "G-5KYP8WJ824"
+    apiKey: "AIzaSyBhmIgCu9SwFNIN5inMimRnPJAgmvkAh9s",
+    authDomain: "lms-database-c7c05.firebaseapp.com",
+    projectId: "lms-database-c7c05",
+    storageBucket: "lms-database-c7c05.firebasestorage.app",
+    messagingSenderId: "576216221103",
+    appId: "1:576216221103:web:8c13d7c0a128b310e45b5a",
+    measurementId: "G-PC1GWVJ76W"
 };
 
 // 3. Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const db = getFirestore(app); 
+const db = getFirestore(app); // Initialize Database
 
 // --- Auth Helper Functions ---
 export function handleAuthRouting() {
@@ -42,11 +29,11 @@ export function handleAuthRouting() {
         const page = path.split("/").pop();
         
         // If not logged in and not on login page, kick them out
-        if (!user && page !== "index.html" && page !== "") {
+        if (!user && page !== "index.html") {
             window.location.href = "../include/index.html";
         } 
         // If logged in and on login page, send to dashboard
-        else if (user && (page === "index.html" || page === "")) {
+        else if (user && page === "index.html") {
             window.location.href = "../include/dashboard.html";
         }
     });
@@ -60,27 +47,10 @@ export function handleLogout() {
             signOut(auth).then(() => {
                 alert("Logged out successfully");
                 window.location.href = "../include/index.html";
-            }).catch((error) => {
-                console.error("Logout Error: ", error);
             });
         });
     }
 }
 
-// Export everything needed for your pages to work
-export { 
-    auth, 
-    db, 
-    signInWithEmailAndPassword, 
-    collection, 
-    query, 
-    orderBy, 
-    onSnapshot, 
-    doc, 
-    updateDoc, 
-    deleteDoc, 
-    where, 
-    limit, 
-    getDocs, 
-    setDoc 
-};
+// Export everything needed
+export { auth, db, signInWithEmailAndPassword, collection, query, orderBy, onSnapshot, doc, updateDoc, deleteDoc };
