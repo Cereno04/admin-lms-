@@ -8,14 +8,14 @@ import { getFirestore, collection, query, orderBy, onSnapshot, doc, updateDoc, d
 
 // 2. YOUR CONFIGURATION
 const firebaseConfig = {
-    apiKey: "AIzaSyBhmIgCu9SwFNIN5inMimRnPJAgmvkAh9s",
-    authDomain: "lms-database-c7c05.firebaseapp.com",
-    projectId: "lms-database-c7c05",
-    storageBucket: "lms-database-c7c05.firebasestorage.app",
-    messagingSenderId: "576216221103",
-    appId: "1:576216221103:web:8c13d7c0a128b310e45b5a",
-    measurementId: "G-PC1GWVJ76W"
-};
+  apiKey: "AIzaSyCjNlxF7tmC2TWdkNUv2oQheeKYQMi-PxY",
+  authDomain: "lms-database-d21f6.firebaseapp.com",
+  projectId: "lms-database-d21f6",
+  storageBucket: "lms-database-d21f6.firebasestorage.app",
+  messagingSenderId: "219532292912",
+  appId: "1:219532292912:web:102aca94640d5abf6d4ef5",
+  measurementId: "G-5KYP8WJ824"
+}
 
 // 3. Initialize Firebase
 const app = initializeApp(firebaseConfig);

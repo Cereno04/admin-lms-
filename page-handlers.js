@@ -15,14 +15,14 @@ import {
 
 // --- FIREBASE CONFIGURATION ---
 const firebaseConfig = {
-    apiKey: "AIzaSyBhmIgCu9SwFNIN5inMimRnPJAgmvkAh9s",
-    authDomain: "lms-database-c7c05.firebaseapp.com",
-    projectId: "lms-database-c7c05",
-    storageBucket: "lms-database-c7c05.firebasestorage.app",
-    messagingSenderId: "576216221103",
-    appId: "1:576216221103:web:8c13d7c0a128b310e45b5a",
-    measurementId: "G-PC1GWVJ76W"
-};
+  apiKey: "AIzaSyCjNlxF7tmC2TWdkNUv2oQheeKYQMi-PxY",
+  authDomain: "lms-database-d21f6.firebaseapp.com",
+  projectId: "lms-database-d21f6",
+  storageBucket: "lms-database-d21f6.firebasestorage.app",
+  messagingSenderId: "219532292912",
+  appId: "1:219532292912:web:102aca94640d5abf6d4ef5",
+  measurementId: "G-5KYP8WJ824"
+}
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
@@ -32,16 +32,13 @@ const db = getFirestore(app);
 // ======================================================
 export function initializeOrders() {
     const tableBody = document.getElementById('orders-table-body');
-    
+    if (!tableBody) return;
+
     // --- UPDATE STATUS FUNCTION (SYNCED) ---
     window.updateOrderStatus = async (orderId, newStatus) => {
-        if (!confirm(`Are you sure you want to update this order to "${newStatus}"?`)) {
-            return; 
-        }
+        if (!confirm(`Are you sure you want to update this order to "${newStatus}"?`)) return; 
 
         try {
-            console.log(`Starting update for Order ID: ${orderId} to Status: ${newStatus}`);
-
             const globalOrderRef = doc(db, "orders", orderId);
             const globalSnap = await getDoc(globalOrderRef);
 
@@ -67,7 +64,6 @@ export function initializeOrders() {
             } 
             
             alert(`Status successfully updated to: ${newStatus}`);
-
         } catch (error) {
             console.error("Update failed:", error);
             alert("Error updating status: " + error.message);
@@ -84,10 +80,9 @@ export function initializeOrders() {
         }
     };
 
-    if (!tableBody) return;
-
     const ordersQuery = query(collection(db, "orders"));
 
+    // LISTEN FOR DATA (With error catching to fix the 'permission-denied' issue)
     onSnapshot(ordersQuery, (snapshot) => {
         let rowsHtml = '';
 
@@ -98,9 +93,11 @@ export function initializeOrders() {
 
         const docs = [];
         snapshot.forEach(doc => docs.push({ id: doc.id, ...doc.data() }));
+        
+        // Sort by timestamp
         docs.sort((a, b) => {
-            const tA = a.timestamp?.seconds || 0;
-            const tB = b.timestamp?.seconds || 0;
+            const tA = a.timestamp?.seconds || a.createdAt?.seconds || 0;
+            const tB = b.timestamp?.seconds || b.createdAt?.seconds || 0;
             return tB - tA; 
         });
 
@@ -110,28 +107,22 @@ export function initializeOrders() {
             const displayPrice = order.totalPrice || order.price || 0;
             
             let dateString = "N/A";
-            if (order.timestamp && typeof order.timestamp.toDate === 'function') {
-                dateString = order.timestamp.toDate().toLocaleDateString();
+            const ts = order.timestamp || order.createdAt;
+            if (ts && typeof ts.toDate === 'function') {
+                dateString = ts.toDate().toLocaleDateString();
             }
 
             const status = order.status || "Pending"; 
-
-            const isPending = status === "Pending" ? "selected" : "";
-            const isProcessing = (status === "Processing") ? "selected" : "";
-            const isPickup = (status === "Ready for Pickup" || status === "Pickup") ? "selected" : "";
-            const isDelivery = (status === "Out for Delivery") ? "selected" : "";
-            const isCompleted = (status === "Completed") ? "selected" : "";
+            const statuses = ["Pending", "Processing", "Ready for Pickup", "Out for Delivery", "Completed"];
 
             let statusColor = "#f97316"; 
             if (status === "Processing") statusColor = "#3b82f6";
-            if (status === "Ready for Pickup" || status === "Pickup") statusColor = "#a855f7"; 
+            if (status.includes("Pickup")) statusColor = "#a855f7"; 
             if (status === "Out for Delivery") statusColor = "#eab308";
             if (status === "Completed") statusColor = "#22c55e"; 
 
             let itemsDisplay = order.selectedItems || "No items";
-            if (Array.isArray(itemsDisplay)) {
-                itemsDisplay = itemsDisplay.join(", ");
-            }
+            if (Array.isArray(itemsDisplay)) itemsDisplay = itemsDisplay.join(", ");
 
             rowsHtml += `
                 <tr>
@@ -142,18 +133,12 @@ export function initializeOrders() {
                     <td>${order.phone || "N/A"}</td>
                     <td><div style="max-height:50px; overflow-y:auto; font-size:12px;">${itemsDisplay}</div></td>
                     <td>₱${displayPrice}</td>
+                    <td><span style="color:${statusColor}; font-weight:bold;">${status}</span></td>
                     <td>
-                        <span style="color:${statusColor}; font-weight:bold; display:block; margin-bottom:5px;">${status}</span>
-                    </td>
-                    <td>
-                        <select onchange="window.updateOrderStatus('${orderId}', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ddd; cursor:pointer;">
-                            <option value="Pending" ${isPending}>Pending</option>
-                            <option value="Processing" ${isProcessing}>Processing</option>
-                            <option value="Ready for Pickup" ${isPickup}>Ready for Pickup</option>
-                            <option value="Out for Delivery" ${isDelivery}>Out for Delivery</option>
-                            <option value="Completed" ${isCompleted}>Completed</option>
+                        <select onchange="window.updateOrderStatus('${orderId}', this.value)" style="padding:5px; border-radius:4px; border:1px solid #ddd;">
+                            ${statuses.map(s => `<option value="${s}" ${status === s ? 'selected' : ''}>${s}</option>`).join('')}
                         </select>
-                        <button onclick="window.deleteOrder('${orderId}')" style="margin-left:5px; color:red; border:none; background:none; cursor:pointer;" title="Delete Order">
+                        <button onclick="window.deleteOrder('${orderId}')" style="margin-left:5px; color:red; border:none; background:none; cursor:pointer;">
                             <span class="material-icons-sharp">delete</span>
                         </button>
                     </td>
@@ -161,11 +146,14 @@ export function initializeOrders() {
             `;
         });
         tableBody.innerHTML = rowsHtml;
+    }, (error) => {
+        console.error("Firestore Listen Error:", error);
+        tableBody.innerHTML = `<tr><td colspan="9" style="text-align:center; color:red; padding:20px;">Permission Denied. Please ensure you are logged in.</td></tr>`;
     });
 }
 
 // ======================================================
-//  RIDER MANAGEMENT (UPDATED to include Vehicle Info)
+//  RIDER MANAGEMENT (Sequential ID & Vehicle Info)
 // ======================================================
 export function initializeSchedule() {
     const tableBody = document.getElementById('rider-table-body');
@@ -190,23 +178,16 @@ export function initializeSchedule() {
                 }
             });
             riderIdInput.value = `RDR-${String(maxNum + 1).padStart(4, "0")}`;
-        } catch (err) {
-            riderIdInput.value = "RDR-0001";
-        }
+        } catch (err) { riderIdInput.value = "RDR-0001"; }
     };
 
-    if(openBtn) {
-        openBtn.onclick = async () => {
-            if(modal) modal.classList.add("active");
-            if(riderIdInput) await setSequentialID();
-        };
-    }
+    if(openBtn) openBtn.onclick = async () => {
+        if(modal) modal.classList.add("active");
+        if(riderIdInput) await setSequentialID();
+    };
 
     const hideModal = () => {
-        if(modal) {
-            modal.classList.remove("active");
-            if(riderForm) riderForm.reset();
-        }
+        if(modal) { modal.classList.remove("active"); if(riderForm) riderForm.reset(); }
     };
 
     if(closeBtn) closeBtn.onclick = hideModal;
@@ -218,44 +199,28 @@ export function initializeSchedule() {
             const riderId = riderIdInput.value.trim();
             const riderRef = doc(db, "riders", riderId);
 
-            // FETCH VALUES safely (Assuming inputs exist in HTML, otherwise defaults to empty)
-            const nameVal = document.getElementById('rider-name') ? document.getElementById('rider-name').value : "";
-            const emailVal = document.getElementById('rider-email') ? document.getElementById('rider-email').value : "";
-            const phoneVal = document.getElementById('rider-phone') ? document.getElementById('rider-phone').value : "";
-            const passVal = document.getElementById('rider-password') ? document.getElementById('rider-password').value : "";
-            
-            // NEW FIELDS FOR APP INFO
-            const bikeVal = document.getElementById('rider-motorcycle') ? document.getElementById('rider-motorcycle').value : "Standard Bike";
-            const plateVal = document.getElementById('rider-plate') ? document.getElementById('rider-plate').value : "---";
+            const nameVal = document.getElementById('rider-name')?.value || "";
+            const emailVal = document.getElementById('rider-email')?.value || "";
+            const phoneVal = document.getElementById('rider-phone')?.value || "";
+            const passVal = document.getElementById('rider-password')?.value || "";
+            const bikeVal = document.getElementById('rider-motorcycle')?.value || "Standard Bike";
+            const plateVal = document.getElementById('rider-plate')?.value || "---";
 
             try {
                 const existing = await getDoc(riderRef);
-                if (existing.exists()) {
-                    alert(`Account exists!`);
-                    return;
-                }
+                if (existing.exists()) { alert(`Account exists!`); return; }
                 await setDoc(riderRef, {
-                    riderId,
-                    name: nameVal,
-                    email: emailVal,
-                    phone: phoneVal,
-                    password: passVal,
-                    motorcycle: bikeVal, // Saved to DB
-                    plateNumber: plateVal, // Saved to DB
-                    status: "Active",
-                    role: "rider",
-                    createdAt: new Date()
+                    riderId, name: nameVal, email: emailVal, phone: phoneVal,
+                    password: passVal, motorcycle: bikeVal, plateNumber: plateVal,
+                    status: "Active", role: "rider", createdAt: new Date()
                 });
                 alert("Rider registered!");
                 hideModal();
-            } catch (err) {
-                alert("Error: " + err.message);
-            }
+            } catch (err) { alert("Error: " + err.message); }
         };
     }
 
-    const ridersQuery = query(collection(db, "riders"), orderBy("createdAt", "desc"));
-    onSnapshot(ridersQuery, (snapshot) => {
+    onSnapshot(query(collection(db, "riders"), orderBy("createdAt", "desc")), (snapshot) => {
         tableBody.innerHTML = '';
         snapshot.forEach((docSnap) => {
             const rider = docSnap.data();
@@ -271,8 +236,7 @@ export function initializeSchedule() {
                             <span class="material-icons-sharp">delete</span>
                         </button>
                     </td>
-                </tr>
-            `;
+                </tr>`;
         });
     });
 
@@ -283,121 +247,81 @@ export function initializeSchedule() {
 }
 
 // ======================================================
-//  DISPATCH CENTER (UPDATED to Fetch & Save Rider Info)
+//  DISPATCH CENTER (Rider Assignment)
 // ======================================================
 export function initializeDispatch() {
     const ordersContainer = document.getElementById('dispatch-orders-container');
-    
-    // UPDATED: Fetches Rider Details from DB before assigning
+    if (!ordersContainer) return;
+
     window.assignRider = async (orderId) => {
-        const riderId = prompt("Enter Rider ID to assign (e.g., RDR-0001):");
+        const riderId = prompt("Enter Rider ID (e.g., RDR-0001):");
         if (!riderId) return;
 
         try {
-            // 1. Fetch Rider Details First
-            const riderRef = doc(db, "riders", riderId);
-            const riderSnap = await getDoc(riderRef);
-
-            if (!riderSnap.exists()) {
-                alert("Error: Rider ID not found! Please check the ID.");
-                return;
-            }
+            const riderSnap = await getDoc(doc(db, "riders", riderId));
+            if (!riderSnap.exists()) { alert("Error: Rider ID not found!"); return; }
 
             const riderData = riderSnap.data();
-            const riderName = riderData.name || "Unknown Rider";
-            const riderPhone = riderData.phone || "No Phone";
-            const riderBike = riderData.motorcycle || "Standard Bike";
-            const riderPlate = riderData.plateNumber || "---";
-
-            // 2. Update Global Order
             const orderRef = doc(db, "orders", orderId);
             const orderSnap = await getDoc(orderRef);
             
-            if (!orderSnap.exists()) {
-                alert("Order not found!");
-                return;
-            }
-
             const updateData = {
                 status: "Ready for Pickup",
                 assignedRiderId: riderId,
-                assignedRiderName: riderName,
-                assignedRiderPhone: riderPhone, // Saving phone for App
-                assignedRiderBike: riderBike,   // Saving bike for App
-                assignedRiderPlate: riderPlate, // Saving plate for App
+                assignedRiderName: riderData.name || "Unknown",
+                assignedRiderPhone: riderData.phone || "No Phone",
+                assignedRiderBike: riderData.motorcycle || "Standard",
+                assignedRiderPlate: riderData.plateNumber || "---",
                 updatedAt: new Date()
             };
 
             await updateDoc(orderRef, updateData);
-
-            // 3. Sync User Booking
             const userId = orderSnap.data().userId;
-            if(userId) {
-                const userRef = doc(db, "users", userId, "bookings", orderId);
-                await setDoc(userRef, updateData, { merge: true });
-            }
+            if(userId) await setDoc(doc(db, "users", userId, "bookings", orderId), updateData, { merge: true });
 
-            alert(`Assigned ${riderName} (${riderBike}) to the order!`);
-
-        } catch(e) {
-            console.error(e);
-            alert("Error assigning rider: " + e.message);
-        }
+            alert(`Assigned ${riderData.name} to the order!`);
+        } catch(e) { alert("Error: " + e.message); }
     };
 
-    if (ordersContainer) {
-        const ordersQuery = query(collection(db, "orders"));
-        onSnapshot(ordersQuery, (snapshot) => {
-            let html = '';
-            if (snapshot.empty) {
-                ordersContainer.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#888;">No active orders.</p>';
-                return;
-            }
-            
-            snapshot.forEach((docSnap) => {
-                const order = docSnap.data();
-                const orderId = docSnap.id;
-                
-                if(order.status === "Completed") return;
+    onSnapshot(query(collection(db, "orders")), (snapshot) => {
+        let html = '';
+        if (snapshot.empty) {
+            ordersContainer.innerHTML = '<p style="grid-column: 1/-1; text-align:center; color:#888;">No active orders.</p>';
+            return;
+        }
+        
+        snapshot.forEach((docSnap) => {
+            const order = docSnap.data();
+            const orderId = docSnap.id;
+            if(order.status === "Completed") return;
 
-                const fullName = order.customerName || `${order.firstName || ''} ${order.lastName || ''}`.trim() || "Unknown";
-                const displayPrice = order.totalPrice || order.price || 0;
-                
-                let statusColor = "#f97316"; 
-                if (order.status === "Processing") statusColor = "#3b82f6";
-                if (order.status === "Ready for Pickup") statusColor = "#a855f7";
-                if (order.status === "Out for Delivery") statusColor = "#eab308";
+            const fullName = order.customerName || `${order.firstName || ''} ${order.lastName || ''}`.trim() || "Unknown";
+            const displayPrice = order.totalPrice || order.price || 0;
+            let statusColor = "#f97316"; 
+            if (order.status === "Processing") statusColor = "#3b82f6";
+            if (order.status === "Ready for Pickup") statusColor = "#a855f7";
+            if (order.status === "Out for Delivery") statusColor = "#eab308";
 
-                // Display assigned rider info in card if exists
-                let assignedInfo = "";
-                if (order.assignedRiderName) {
-                    assignedInfo = `<div style="margin-top:10px; font-size:12px; color:#444; background:#f0f9ff; padding:5px; border-radius:4px;">
-                        <strong>Rider:</strong> ${order.assignedRiderName} <br>
-                        <strong>Plate:</strong> ${order.assignedRiderPlate || '--'}
-                    </div>`;
-                }
+            let assignedInfo = order.assignedRiderName ? `<div style="margin-top:10px; font-size:12px; color:#444; background:#f0f9ff; padding:5px; border-radius:4px;">
+                <strong>Rider:</strong> ${order.assignedRiderName} <br>
+                <strong>Plate:</strong> ${order.assignedRiderPlate || '--'}
+            </div>` : "";
 
-                html += `
-                <div class="order-card" style="border-left: 5px solid ${statusColor}; background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
-                    <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-                        <span style="font-weight:bold; color:#666;">#${orderId.substring(0,5).toUpperCase()}</span>
-                        <span style="font-weight:bold; color:#0077B6;">₱${displayPrice}</span>
-                    </div>
-                    <h3 style="margin:0 0 5px 0;">${fullName}</h3>
-                    <p style="color:#666; font-size:12px; margin-bottom:10px;">${order.address || "No Address"}</p>
-                    
-                    <div style="margin-bottom:15px; font-weight:bold; color:${statusColor};">
-                        ${order.status || "Pending"}
-                    </div>
-                    
-                    ${assignedInfo}
-
-                    <button onclick="window.assignRider('${orderId}')" style="width:100%; padding:10px; margin-top:10px; background:#0077B6; color:white; border:none; border-radius:6px; cursor:pointer;">
-                        ${order.assignedRiderId ? "Re-Assign Rider" : "Assign Rider"}
-                    </button>
-                </div>`;
-            });
-            ordersContainer.innerHTML = html;
+            html += `
+            <div class="order-card" style="border-left: 5px solid ${statusColor}; background:#fff; padding:15px; border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-weight:bold; color:#666;">#${orderId.substring(0,5).toUpperCase()}</span>
+                    <span style="font-weight:bold; color:#0077B6;">₱${displayPrice}</span>
+                </div>
+                <h3 style="margin:0 0 5px 0;">${fullName}</h3>
+                <p style="color:#666; font-size:12px; margin-bottom:10px;">${order.address || "No Address"}</p>
+                <div style="margin-bottom:15px; font-weight:bold; color:${statusColor};">${order.status || "Pending"}</div>
+                ${assignedInfo}
+                <button onclick="window.assignRider('${orderId}')" style="width:100%; padding:10px; margin-top:10px; background:#0077B6; color:white; border:none; border-radius:6px; cursor:pointer;">
+                    ${order.assignedRiderId ? "Re-Assign Rider" : "Assign Rider"}
+                </button>
+            </div>`;
         });
-    }
+        ordersContainer.innerHTML = html;
+    });
 }
